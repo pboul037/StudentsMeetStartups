@@ -1,0 +1,57 @@
+class Address
+{
+    appartmentNumber;
+    streetNumber;
+    streetName;
+    postalCode;
+    province;
+    municipality;
+}
+
+class Startup
+{
+    * -- 1 Address postalAddress;
+    1 -- 1..* UserAccount;
+    companyName;
+    emailAddress;
+    description;
+    websiteUrl;
+}
+
+class Student
+{
+    1 -- 1 UserAccount;
+    name;
+    emailAddress;
+    phoneNumber;
+    selfDescription;
+    resume;
+    transcript;
+}
+
+class UserAccount
+{
+    Integer id;
+    username;
+    password;
+}
+
+class Meetup
+{
+    * -- 1 Startup organizedBy;
+    * -- * Student participant;
+    * -- 0..1 Address location;
+    DateTime startTime;
+    DateTime endTime;
+}
+
+class Review
+{
+    * -- 0..1 Startup;
+    * -- 0..1 Student;
+    rating;
+    comment;
+    Boolean hired;
+}
+
+
