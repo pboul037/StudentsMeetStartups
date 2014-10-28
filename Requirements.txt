@@ -1,0 +1,34 @@
+Problem Statement : 
+Software engineering students need a platform to connect with startups for part time work and startups need smart creative employees who are willing to work at a cheap rate.
+Requirements :
+
+Phase I
+studentsmeetstartups.com is a website that connects students (with or without experience) with local startups for part time work and help startup businesses find smart creative students who are informed on cutting edge technologies.
+A student has a name, age, short personal description, an address, personal website (optional), email, telephone number, academic record, resume and a user account.  In order to apply for a meetup, a student must be registered to Students Meet Startups.  An academic record contains a transcript pdf document. 
+An startup has a name, description, an address, telephone number, fax, website (optional), an email and a user account.  In order to post meetups, an employer must be a registered member. 
+An address has a street number, apartment number(optional), street name, postal code, province and municipality.
+
+A user account has a unique id, username and password.
+
+A meetup has a start time, end time, address(optional), an employer and participants (students).  A meetup has startup representants reviews and participants (students) reviews.  A meetup review has a rating, a comment.
+Phase II
+Meetups can be physical or virtual.
+
+An academic record contains all the academic information about a student: CGPA, GPA per term, course followed/completed /failed/incomplete (with grades), and expected graduation date.
+
+A startup has employees.  Employees can be of type x and type y.  Each type has different access modifiers.
+
+Meetups can be of “invite only” type or public type.  Invite only meetups can be viewed by invitedonly
+
+A meetup review has a “was hired” or “hired someone” feature, described by an awesome icon.
+
+Phase III
+Matching algorithm for employers and skills.
+
+Phase Monetization
+Posting a meetup has a certain fee each time (fee is determined with the size of the business).
+1.	Short paragraph describing the requirements (just like the requirements outline I used for the manufacturing plant controller, the airline system, or assignment 4; although keep your system simpler than these)
+2.	List of use cases or user stories (typically 2-5). Each of these should be 1-5 lines or so.
+3.	A couple of paragraphs describing the architecture: What technologies and programming languages are you going to use? What will the client do, what will the server do?
+4.	First draft of the UML class diagram (system domain model). Minimum 3 classes; suggested absolute maximum 10 classes.
+5.	List of messages you expect to transmit to the server from the client and from the client to the server. (half a page)
