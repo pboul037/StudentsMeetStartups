@@ -1,0 +1,10 @@
+{
+    "name": "StudentsMeetStartups",
+    "description": "A SEG2105 final project",
+    "version": "0.0.1",
+    "private": true,
+    "dependencies": {
+        "express": "4.x",
+        "orm": "2.1.*"
+    }
+}
