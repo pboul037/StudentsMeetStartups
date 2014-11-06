@@ -1,0 +1,95 @@
+
+- Reconfigured locales to add en_CA.UTF-8:
+
+dpkg-reconfigure locales
+
+- Update aptitude db and upgrade system:
+
+aptitude update
+aptitude upgrade
+
+- Create unprivileged users:
+
+adduser ngagnon
+adduser pboulet
+
+- Disabled SSH root login:
+
+vi /etc/ssh/sshd_config
+# Set PermitRootLogin to no
+# Add:
+AllowUsers ngagnon pboulet
+:wq
+
+- Install and configure sudo:
+
+aptitude install sudo
+visudo
+# Copy the line for root twice (one for pboulet, one for ngagnon)
+:wq
+
+- Disabled root account all together:
+
+su - ngagnon
+sudo passwd -l root
+
+- Install packages:
+
+sudo aptitude install vim zsh wget mysql-server ntp shorewall fail2ban apache2 libapache2-mod-proxy-html
+
+- Install Node.JS:
+
+curl -sL https://deb.nodesource.com/setup | bash -
+sudo aptitude install nodejs
+
+- Configure firewall (shorewall):
+
+sudo cp /usr/share/doc/shorewall/examples/one-interface/{interfaces,zones,policy,rules} /etc/shorewall
+
+sudo cat >> /etc/shorewall/rules
+# Permit incoming SSH traffic
+
+ACCEPT          net             $FW             tcp 22
+
+# Permit incoming HTTP traffic
+
+ACCEPT          net             $FW             tcp 80
+
+^D
+
+vi /etc/default/shorewall
+# Change startup = 0 to:
+startup = 1
+:wq
+
+sudo shorewall start
+
+- Configure Apache web server as reverse proxy:
+
+sudo vim /etc/apache2/sites-available/studentsmeetstartups.com 
+<VirtualHost *:80>
+    ServerAdmin davy.brion@thatextramile.be
+    ServerName studentsmeetstartups.com
+    ServerAlias www.studentsmeetstartups.com
+ 
+    ProxyRequests off
+ 
+    <Proxy *>
+        Order deny,allow
+        Allow from all
+    </Proxy>
+ 
+    <Location />
+        ProxyPass http://localhost:3000/
+        ProxyPassReverse http://localhost:3000/
+    </Location>
+</VirtualHost>
+:wq
+
+sudo a2enmod proxy
+sudo a2enmod proxy_http
+sudo a2ensite studentsmeetstartups.com 
+sudo service apache2 reload
+
+
+
