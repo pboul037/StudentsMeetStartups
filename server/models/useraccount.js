@@ -4,7 +4,7 @@ modules.exports = function (db) {
         username: String,
         password: String
     });
-});
+};
 
 
 

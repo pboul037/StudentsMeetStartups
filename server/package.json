@@ -4,8 +4,9 @@
     "version": "0.0.1",
     "private": true,
     "dependencies": {
-        "express": "4.x",
+        "express": "4.*",
         "mysql": "2.*",
-        "orm": "2.1.*"
+        "orm": "2.1.*",
+        "async": "0.9.*"
     }
 }
