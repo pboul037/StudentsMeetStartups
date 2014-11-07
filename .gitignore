@@ -1,0 +1,3 @@
+#ignore all expressjs related files
+
+server/node_modules/*/ 
