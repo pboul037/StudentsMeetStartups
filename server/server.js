@@ -4,7 +4,31 @@ var express = require('express'),
     app     = express(),
     config  = require('./config');
 
-/* List and filter startups */
+/* Load the configuration specific to the environment */
+config = config[process.env.NODE_ENV];
+
+/* Trust our Apache reverse proxy */
+app.enable('trust proxy');
+
+/* Wrap node-orm2 in Express middleware */
+app.use(orm.express(config.dataSourceName, {
+    define: function (db, models, next) {
+        /* Load models */
+        db.load('./models/meetup');
+        db.load('./models/student');
+        db.load('./models/startup');
+        db.load('./models/useraccount');
+        models = db.models;
+
+        /* Define assocations */
+        var assocations = require('./models/assocations');
+        assocations();
+
+        next();
+    }
+}));
+
+/* Search startups */
 app.get('/startups', function ( request, response ) {
 
 });

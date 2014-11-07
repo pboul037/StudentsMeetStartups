@@ -5,6 +5,7 @@
     "private": true,
     "dependencies": {
         "express": "4.x",
+        "mysql": "2.*",
         "orm": "2.1.*"
     }
 }

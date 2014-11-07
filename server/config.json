@@ -1,0 +1,12 @@
+{
+    "production":
+    {
+        "listenPort": "3000",
+        "dataSourceName": "mysql://smeetsapp:Ijh83qQr_-mic8_l@127.0.0.1/smeetsdb"
+    },
+    "development":
+    {
+        "listenPort": "3000",
+        "dataSourceName": "mysql://root:seg2105@127.0.0.1/smeetsdb"
+    }
+}

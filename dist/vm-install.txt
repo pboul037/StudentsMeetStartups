@@ -71,6 +71,7 @@ sudo vim /etc/apache2/sites-available/studentsmeetstartups.com
     ServerAdmin davy.brion@thatextramile.be
     ServerName studentsmeetstartups.com
     ServerAlias www.studentsmeetstartups.com
+    DocumentRoot /var/www/studentsmeetstartups.com
  
     ProxyRequests off
  
@@ -79,10 +80,9 @@ sudo vim /etc/apache2/sites-available/studentsmeetstartups.com
         Allow from all
     </Proxy>
  
-    <Location />
-        ProxyPass http://localhost:3000/
-        ProxyPassReverse http://localhost:3000/
-    </Location>
+    ProxyPassMatch ^(/.*\.(css|js|jpg|jpeg|gif))$ !
+    ProxyPass / http://localhost:3000/
+    ProxyPassReverse / http://localhost:3000/
 </VirtualHost>
 :wq
 
