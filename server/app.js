@@ -22,7 +22,7 @@ app.use(orm.express(config.dataSourceName, {
 
         /* Define assocations */
         var associations = require('./models/associations');
-        associations();
+        associations(db);
 
         next();
     }
