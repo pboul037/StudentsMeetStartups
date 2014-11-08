@@ -4,12 +4,17 @@ module.exports = function (db) {
     var Startup = db.models.startup;
     var UserAccount = db.models.useraccount;
     var Meetup = db.models.meetup;
+    var Review = db.models.review;
 
-    Student.hasOne('account', UserAccount, { reverse: "student" });
-    Startup.hasMany('accounts', UserAccount, { reverse: "startup" });
+    Student.hasOne("account", UserAccount, { reverse: "student" });     /* 1 -- 1 */
+    Startup.hasMany("accounts", UserAccount, { reverse: "startups" });  /* 1 -- * */
 
-    Meetup.hasOne('startup', Startup, { reverse: "meetups" });
-    Meetup.hasMany('students', Student, { reverse: "meetups" });
+    Meetup.hasOne("startup", Startup, { reverse: "meetups" });          /* * -- 1 */
+    Meetup.hasMany("participants", Student, { reverse: "meetups" });    /* * -- * */
+
+    Review.hasOne("meetup", Meetup, { reverse: "reviews" });            /* * -- 1 */
+    Startup.hasMany("reviews", Review, { reverse: "startups" });        /* 1 -- * */
+    Student.hasMany("reviews", Review, { reverse: "students" });        /* 1 -- * */
 };
 
 
