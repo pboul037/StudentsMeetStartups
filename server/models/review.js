@@ -18,12 +18,12 @@ modules.exports = function (db) {
                 });
             },
             isStudentReview: function (callback) {
-                this.getType(function (error, type) {
+                this.getRevieweeType(function (error, type) {
                     callback(error, type.name == 'student');   
                 });
             },
             isStartupReview: function () {
-                this.getType(function (error, type) {
+                this.getRevieweeType(function (error, type) {
                     callback(error, type.name == 'startup');   
                 });
             },
