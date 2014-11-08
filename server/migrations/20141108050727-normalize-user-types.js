@@ -9,7 +9,7 @@ exports.up = function(db, callback) {
             name: { type: "string" }
         }),
         db.insert.bind(db, "usertypes", ["id", "name"], [1, "student"]),
-        db.insert.bind(db, "usertypes", ["id", "name"], [2, "student"]),
+        db.insert.bind(db, "usertypes", ["id", "name"], [2, "startup"]),
         db.addColumn.bind(db, "useraccounts", "type_id", { type: "int", notNull: true }),
         db.removeColumn.bind(db, "reviews", "wrote_about"),
         db.addColumn.bind(db, "reviews", "revieweetype_id", { type: "int", notNull: true })
