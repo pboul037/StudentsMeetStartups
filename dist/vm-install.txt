@@ -13,6 +13,11 @@ aptitude upgrade
 adduser ngagnon
 adduser pboulet
 
+- Install vim, use as default editor
+
+aptitude install vim
+update-alternatives --config editor
+
 - Disabled SSH root login:
 
 vi /etc/ssh/sshd_config

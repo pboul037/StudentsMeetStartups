@@ -3,6 +3,7 @@ module.exports = function (db) {
     var Student = db.models.student;
     var Startup = db.models.startup;
     var UserAccount = db.models.useraccount;
+    var UserType = db.models.usertype;
     var Meetup = db.models.meetup;
     var Review = db.models.review;
 
@@ -15,6 +16,10 @@ module.exports = function (db) {
     Review.hasOne("meetup", Meetup, { reverse: "reviews" });            /* * -- 1 */
     Startup.hasMany("reviews", Review, { reverse: "startups" });        /* 1 -- * */
     Student.hasMany("reviews", Review, { reverse: "students" });        /* 1 -- * */
+
+    UserAccount.hasOne("type", UserType, { autoFetch: true });          /* 1 -- 1 */
+    Review.hasOne("revieweeType", UserType, { autoFetch: true,          /* 1 -- 1 */
+        field: "revieweetype_id" });       
 };
 
 

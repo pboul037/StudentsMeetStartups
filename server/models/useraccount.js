@@ -1,9 +1,8 @@
 
 modules.exports = function (db) {
-    var UserAccount = db.define("useraccounts", {
-        username: String,
-        password: String,
-        belongsTo: { type: "enum", values: ["student", "startup"] }
+    var UserAccount = db.define("useraccount", {
+        username: { type: "text" },
+        password: { type: "text" }
     }, {
         collection: "useraccounts", /* Real table name */   
         methods: {
