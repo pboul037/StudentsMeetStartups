@@ -89,12 +89,10 @@ app.post("/meetup/participant", function (request, response) {
     var Student = request.models.student;
 
     async.waterfall([
-        function (callback) {
-            async.parallel([
-                Student.get.bind(Student, request.body.student_id),
-                Meetup.get.bind(Meetup, request.body.meetup_id)
-            ], callback);
-        },
+        async.series.bind(async, [
+            Student.get.bind(Student, request.body.student_id),
+            Meetup.get.bind(Meetup, request.body.meetup_id)
+        ]),
         function (results, callback) {
             var student = results[0],
                 meetup = results[1];
