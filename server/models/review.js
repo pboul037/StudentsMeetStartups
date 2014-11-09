@@ -1,5 +1,5 @@
 
-modules.exports = function (db) {
+module.exports = function (db, cb) {
     var Review = db.define("review", {
         comment:         { type: "text", size: 140 },
         rating:          { type: "integer" },
@@ -29,6 +29,8 @@ modules.exports = function (db) {
             },
         }
     });
+
+    return cb();
 };
 
 

@@ -1,5 +1,5 @@
 
-modules.exports = function (db) {
+module.exports = function (db, cb) {
     var Student = db.define("student", {
         name:            { type: "text", size: 100 },
         emailAddress:    { type: "text", mapsTo: "email_address" },
@@ -10,6 +10,8 @@ modules.exports = function (db) {
     }, {
         collection: "students" /* Real table name */    
     });
+
+    return cb();
 };
 
 

@@ -8,6 +8,7 @@
         "mysql": "2.*",
         "orm": "2.1.*",
         "async": "0.9.*",
-        "db-migrate": "0.7.*"
+        "body-parser": "1.9.*",
+        "lodash": "2.4.*"
     }
 }

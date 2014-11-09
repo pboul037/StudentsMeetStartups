@@ -1,5 +1,5 @@
 
-modules.exports = function (db) {
+module.exports = function (db, cb) {
     var UserAccount = db.define("useraccount", {
         username: { type: "text" },
         password: { type: "text" }
@@ -23,6 +23,8 @@ modules.exports = function (db) {
             }
         }
     });
+
+    return cb();
 };
 
 

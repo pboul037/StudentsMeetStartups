@@ -1,100 +1,110 @@
+/*
+ * Server main bootstrap
+ *
+ * Copyright (c) 2014, Patrice Boulet & Nicholas Gagnon
+ * All rights reserved.
+ */
 
-var express = require('express'),
-    orm     = require('orm'),
-    app     = express(),
-    config  = require('./config');
+var express = require("express"),
+    async = require("async"),
+    bodyParser = require("body-parser"),
+    _ = require("lodash"),
+    database = require("./lib/database"),
+    responseHandler = require("./lib/response-handler"),
+    config  = require("./config");
 
 /* Load the configuration specific to the environment */
 config = config[process.env.NODE_ENV];
 
-/* Trust our Apache reverse proxy */
-app.enable('trust proxy');
+/* Configure the framework */
+var app = express();
+app.enable("trust proxy");
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(database.connection(config.dataSourceName));
+app.use(responseHandler);
 
-/* Wrap node-orm2 in Express middleware */
-app.use(orm.express(config.dataSourceName, {
-    define: function (db, models, next) {
-        /* Load models */
-        db.load('./models/meetup');
-        db.load('./models/student');
-        db.load('./models/startup');
-        db.load('./models/useraccount');
-        models = db.models;
-
-        /* Define assocations */
-        var associations = require('./models/associations');
-        associations();
-
-        next();
-    }
-}));
-    
-function handleError(error, data, callback)
-{
-    if (error)
-        this.response.json({success: false, message: error.message});
-    else
-        callback(data);
-}
-
-/* Fetch startups */
+/* Define the routes */
 app.get('/startups', function (request, response) {
+    var Startup = request.models.startup;
+    response.put(Startup.find.bind(Startup));
 });
 
-/* Fetch a specific startup */
 app.get('/startup/:id', function (request, response) {
     var Startup = request.models.startup;
-    var getStartup = _.bind(Startup.get, Startup);
-    var handleError = _.bind(handleError, {response: response, request: request});
-
-    async.seq(
-        getStartup,
-        handleError,
-        function (startup) {
-            response.json({success: true, data: startup});
-        }
-    )(request.params.id);
+    response.put(Startup.get.bind(Startup, request.params.id));
 });
 
-/* Create new startup */
 app.post('/startup', function (request, response) {
-
+    var Startup = request.models.startup;
+    response.put(Startup.create.bind(Startup, request.body.startup));
 });
 
-/* Update existing startup */
 app.put('/startup/:id', function (request, response) {
+    var Startup = request.models.startup;
 
+    async.waterfall([
+        Startup.get.bind(Startup, request.params.id),
+        function (startup, callback) {
+            _.extend(startup, request.body.startup);
+            startup.save(callback);
+        }
+    ], response.handle);
 });
 
-/* Create new student */
-app.post('/student', function (request, response) {
-
+app.get('/students', function (request, response) {
+    var Student = request.models.student;
+    response.put(Student.find.bind(Student));
 });
 
-/* Fetch a specific student */
 app.get('/student/:id', function (request, response) {
     var Student = request.models.student;
-    var getStudent = _.bind(Student.get, Startup);
-    var handleError = _.bind(handleError, {response: response, request: request});
+    response.put(Student.get.bind(Student, request.params.id));
+});
 
-    async.seq(
-        getStudent,
-        handleError,
-        function (student) {
-            response.json({success: true, data: student});
+app.post('/student', function (request, response) {
+    var Student = request.models.student;
+    response.put(Student.create.bind(Student, request.body.student));
+});
+
+app.put('/student/:id', function (request, response) {
+    var Student = request.models.student;
+
+    async.waterfall([
+        Student.get.bind(Student, request.params.id),
+        function (student, callback) {
+            _.extend(student, request.body.student);
+            student.save(callback);
         }
-    )(request.params.id);
+    ], response.handle);
 });
 
-/* Create new meetup */
 app.post("/meetup", function (request, response) {
-
+    var Meetup = request.models.meetup;
+    response.put(Meetup.create.bind(Meetup, request.body.meetup));
 });
 
-/* Update existing meetup */
-app.put("/meetup/:id", function (request, response) {
+app.post("/meetup/participant", function (request, response) {
+    var Meetup = request.models.meetup;
+    var Student = request.models.student;
 
+    async.waterfall([
+        function (callback) {
+            async.parallel([
+                Student.get.bind(Student, request.body.student_id),
+                Meetup.get.bind(Meetup, request.body.meetup_id)
+            ], callback);
+        },
+        function (results, callback) {
+            var student = results[0],
+                meetup = results[1];
+
+            meetup.addParticipant(student, callback);
+        }
+    ], response.handle);
 });
 
+/* Start listening for connections */
 var server = app.listen(config.listenPort, function () {
     console.log('Listening on port %d', server.address().port);
 });
