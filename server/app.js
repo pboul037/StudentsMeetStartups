@@ -25,6 +25,10 @@ app.use(database.connection(config.dataSourceName));
 app.use(responseHandler);
 
 /* Define the routes */
+app.get("/", function (request, response) {
+    response.sendFile("index.html", {root: "../client/"});
+});
+
 app.get('/startups', function (request, response) {
     var Startup = request.models.startup;
     response.put(Startup.find.bind(Startup));
