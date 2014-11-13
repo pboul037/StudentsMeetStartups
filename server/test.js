@@ -9,7 +9,7 @@ var superagent = require("superagent"),
     expect = require("expect.js"),
     _ = require("lodash");
 
-describe("server test", function () {
+describe("StudentsMeetStartup REST API", function () {
     var startupId, studentId, meetupId;
     
     var startup = {
@@ -52,7 +52,7 @@ describe("server test", function () {
         numMaxParticipants: 6
     };
 
-    it("create startup", function (done) {
+    it("can create a startup", function (done) {
         http.post("/startup", { "startup": startup }).test(function (response) {
             expect(response).to.have.property("data");
             expect(response.data).to.have.key("id");
@@ -69,7 +69,7 @@ describe("server test", function () {
         });
     });
     
-    it("find statup", function (done) {
+    it("can find a statup", function (done) {
         http.get("/startup/" + startupId).test(function (response) {
             expect(response).to.have.property("data");
             expect(response.data).to.eql(startup);
@@ -77,7 +77,7 @@ describe("server test", function () {
         });
     });
 
-    it("update startup", function (done) {
+    it("can update a startup", function (done) {
         http.put("/startup/" + startupId, {"startup": updatedStartup}).test(function (response) {
             expect(response).to.have.property("data");
             expect(response.data).to.eql(_.extend(startup, updatedStartup));
@@ -85,7 +85,7 @@ describe("server test", function () {
         });
     });
 
-    it("create student", function (done) {
+    it("can create a student", function (done) {
         http.post("/student", { "student": student }).test(function (response) {
             expect(response).to.have.property("data");
 
@@ -106,7 +106,7 @@ describe("server test", function () {
         });
     });
     
-    it("find student", function (done) {
+    it("can find a student", function (done) {
         http.get("/student/" + studentId).test(function (response) {
             expect(response).to.have.property("data");
             expect(response.data).to.eql(student);
@@ -114,7 +114,7 @@ describe("server test", function () {
         });
     });
     
-    it("update student", function (done) {
+    it("can update a student", function (done) {
         http.put("/student/" + studentId, {"student": updatedStudent}).test(function (response) {
             expect(response).to.have.property("data");
             expect(response.data).to.eql(_.extend(student, updatedStudent));
@@ -122,7 +122,7 @@ describe("server test", function () {
         });
     });
 
-    it("create meetup", function (done) {
+    it("can create a meetup", function (done) {
         meetup.startupId = startupId;
 
         http.post("/meetup", { "meetup": meetup }).test(function (response) {
@@ -137,7 +137,7 @@ describe("server test", function () {
         });
     });
 
-    it("add meetup participant", function (done) {
+    it("can add a meetup participant", function (done) {
         http.post("/meetup/participant", { "meetupId": meetupId, "studentId": studentId })
             .test(function (response) { done(); });
     });
