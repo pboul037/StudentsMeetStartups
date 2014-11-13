@@ -111,7 +111,7 @@ app.post('/student', function (request, response) {
             UserAccount.create(userAccount, callback);
         },
         function (userAccount, callback) {
-            student.account_id = userAccount.id;
+            student.accountId = userAccount.id;
             Student.create(student, callback);
         }
     ], response.handle);

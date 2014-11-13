@@ -1,6 +1,6 @@
 {
     "name": "StudentsMeetStartups",
-    "description": "A SEG2105 final project",
+    "description": "An SEG2105 final project",
     "version": "0.0.1",
     "private": true,
     "dependencies": {
@@ -10,5 +10,12 @@
         "async": "0.9.*",
         "body-parser": "1.9.*",
         "lodash": "2.4.*"
+    },
+    "devDependencies": {
+        "db-migrate": "0.7.*",
+        "mocha": "2.0.*",
+        "expect.js": "0.3.*",
+        "superagent": "0.21.*",
+        "describe": "1.2.*"
     }
 }
