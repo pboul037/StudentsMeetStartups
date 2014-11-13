@@ -1,4 +1,4 @@
-﻿requirejs.config({
+requirejs.config({
     paths: {
         'text': '../lib/require/text',
         'durandal': '../lib/durandal/js',
@@ -9,9 +9,7 @@
     }
 });
 
-define(function (require) {
-    var system = require('durandal/system'),
-        app = require('durandal/app');
+define(['durandal/system', 'durandal/app', 'durandal/viewLocator'], function (system, app, viewLocator) {
 
     system.debug(true);
 
@@ -23,6 +21,11 @@ define(function (require) {
     });
 
     app.start().then(function () {
-        app.setRoot('shell');
+
+        // Replace 'viewmodels' in the moduleId with 'views' to locate the view.
+        // Look for partial views in a 'views' folder in the root.
+        viewLocator.useConvention();
+
+        app.setRoot('viewmodels/shell');
     });
 });
