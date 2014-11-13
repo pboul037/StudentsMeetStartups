@@ -7,19 +7,33 @@ module.exports = function (db) {
     var Meetup = db.models.meetup;
     var Review = db.models.review;
 
-    Student.hasOne("account", UserAccount, { reverse: "student" });     /* 1 -- 1 */
-    Startup.hasMany("accounts", UserAccount, {}, { reverse: "startups" });  /* 1 -- * */
+    /* 1 Student -- 1 UserAccount */
+    Student.hasOne("account", UserAccount, { reverse: "student",
+        field: { "accountId": { type: "integer", name: "accountId", mapsTo: "account_id" } } });
+    /* 1 Startup -- * UserAccount */
+    Startup.hasMany("accounts", UserAccount, {}, { reverse: "startups",
+        mergeTable: "startup_accounts", mergeId: "startup_id", mergeAssocId: "useraccount_id" });  
 
-    Meetup.hasOne("startup", Startup, { reverse: "meetups" });          /* * -- 1 */
-    Meetup.hasMany("participants", Student, {}, { reverse: "meetups" });    /* * -- * */
+    /* * Meetup -- 1 Startup */
+    Meetup.hasOne("startup", Startup, { reverse: "meetups",
+        field: { "startupId": { type: "integer", name: "startupId", mapsTo: "startup_id" } } });
+    /* * Meetup -- * Student */
+    Meetup.hasMany("participants", Student, {}, { reverse: "meetups",
+        mergeTable: "meetup_participants", mergeId: "meetup_id", mergeAssocId: "student_id" });
 
-    Review.hasOne("meetup", Meetup, { reverse: "reviews" });            /* * -- 1 */
-    Startup.hasMany("reviews", Review, {}, { reverse: "startups" });        /* 1 -- * */
-    Student.hasMany("reviews", Review, {}, { reverse: "students" });        /* 1 -- * */
+    /* * Review -- 1 Meetup */
+    Review.hasOne("meetup", Meetup, { reverse: "reviews" });
+    /* 1 Startup -- * Review */
+    Startup.hasMany("reviews", Review, {}, { reverse: "startups" });
+    /* 1 Student -- * Review */
+    Student.hasMany("reviews", Review, {}, { reverse: "students" });
 
-    UserAccount.hasOne("type", UserType, { autoFetch: true });          /* 1 -- 1 */
-    Review.hasOne("revieweeType", UserType, { autoFetch: true,          /* 1 -- 1 */
-        field: "revieweetype_id" });       
+    /* * UserAccount -- 1 UserType */
+    UserAccount.hasOne("type", UserType, { autoFetch: true,
+        field: { "typeId": { type: "integer", name: "typeId", mapsTo: "type_id" } } });
+    /* * Review -- 1 UserType */
+    Review.hasOne("revieweeType", UserType, { autoFetch: true,
+        field: { "revieweeTypeId": { type: "integer", "name": "revieweeTypeId", mapsTo: "revieweetype_id" } } });       
 };
 
 

@@ -85,7 +85,7 @@ sudo vim /etc/apache2/sites-available/studentsmeetstartups.com
         Allow from all
     </Proxy>
  
-    ProxyPassMatch ^(/.*\.(css|js|jpg|jpeg|gif|html|map))$ !
+    ProxyPassMatch ^(/.*\.(css|js|jpg|jpeg|gif|html|map|min))$ !
     ProxyPass / http://localhost:3000/
     ProxyPassReverse / http://localhost:3000/
 </VirtualHost>

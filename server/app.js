@@ -40,8 +40,38 @@ app.get('/startup/:id', function (request, response) {
 });
 
 app.post('/startup', function (request, response) {
+    var UserType = request.models.usertype;
+    var UserAccount = request.models.useraccount;
     var Startup = request.models.startup;
-    response.put(Startup.create.bind(Startup, request.body.startup));
+
+    var startup = _.omit(request.body.startup, "username", "password");
+    var userAccount = _.pick(request.body.startup, "username", "password");
+
+    async.waterfall([
+        async.series.bind(async, [
+            createUserAccount,
+            Startup.create.bind(Startup, startup)
+        ]),
+        function (results, callback) {
+            var userAccount = results[0],
+                startup = results[1];
+
+            startup.addAccounts(userAccount, function (error) {
+                callback(error, startup);   
+            });
+        }
+    ], response.handle);
+
+    function createUserAccount(callback)
+    {
+        async.waterfall([
+            UserType.one.bind(UserType, {name: "startup"}),
+            function (userType, callback) {
+                userAccount.typeId = userType.id;
+                UserAccount.create(userAccount, callback);
+            }
+        ], callback);
+    }
 });
 
 app.put('/startup/:id', function (request, response) {
@@ -67,8 +97,24 @@ app.get('/student/:id', function (request, response) {
 });
 
 app.post('/student', function (request, response) {
+    var UserType = request.models.usertype;
+    var UserAccount = request.models.useraccount;
     var Student = request.models.student;
-    response.put(Student.create.bind(Student, request.body.student));
+
+    var student = _.omit(request.body.student, "username", "password");
+    var userAccount = _.pick(request.body.student, "username", "password");
+
+    async.waterfall([
+        UserType.one.bind(UserType, {name: "student"}),
+        function (userType, callback) {
+            userAccount.typeId = userType.id;
+            UserAccount.create(userAccount, callback);
+        },
+        function (userAccount, callback) {
+            student.account_id = userAccount.id;
+            Student.create(student, callback);
+        }
+    ], response.handle);
 });
 
 app.put('/student/:id', function (request, response) {
@@ -94,14 +140,14 @@ app.post("/meetup/participant", function (request, response) {
 
     async.waterfall([
         async.series.bind(async, [
-            Student.get.bind(Student, request.body.student_id),
-            Meetup.get.bind(Meetup, request.body.meetup_id)
+            Student.get.bind(Student, request.body.studentId, {only: ["id"]}),
+            Meetup.get.bind(Meetup, request.body.meetupId, {only: ["id"]})
         ]),
         function (results, callback) {
             var student = results[0],
                 meetup = results[1];
 
-            meetup.addParticipant(student, callback);
+            meetup.addParticipants(student, callback);
         }
     ], response.handle);
 });
