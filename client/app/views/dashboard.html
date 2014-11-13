@@ -1,9 +1,17 @@
 <section>
-    <div id="dashboardLayout">
-        <h1>Dashboard</h1>
-        <div data-bind="compose:'meetups.html'"></div>
-        <div data-bind="compose:'information.html'"></div>
-        <div data-bind="compose:'recentlyViewed.html'"></div>
+    <div class=container-fluid>
+        <div class="row">
+            <div class="col-sm-offset-5 col-sm=7">
+                <h1>Dashboard</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-8" data-bind="compose:'meetups.html'"></div>
+            <div class="col-sm-4" data-bind="compose:'information.html'"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12" data-bind="compose:'recentlyViewed.html'"></div>
+        </div>
     </div>
 </section>
 
