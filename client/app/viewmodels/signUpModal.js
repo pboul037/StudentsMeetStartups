@@ -30,7 +30,7 @@ define(function (require) {
             http
             .post(url, {student: self.toJSON()})
             .then(function (data) {
-                return http.post(url, {username: self.username(), password: self.password()}); })
+                return http.post(loginUrl, {username: self.username(), password: self.password()}); })
             .then(function (data) { dialog.close(self); router.navigate('dashboard'); })
             .fail(function (error) { self.errorMessage(error.responseText); })
             .done();
