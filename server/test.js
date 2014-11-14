@@ -22,6 +22,11 @@ describe("StudentsMeetStartup REST API", function () {
         password: "secret"
     };
 
+    var startupCredentials = {
+        username: "acmeadmin",
+        password: "secret"
+    };
+
     var updatedStartup = {
         companyName: "Acme Networks Inc.",
         emailAddress: "careers@acme.net",
@@ -40,6 +45,11 @@ describe("StudentsMeetStartup REST API", function () {
         password: "th1si5a5tr0n9password;;"
     };
 
+    var studentCredentials = {
+        username: "tim",
+        password: "th1si5a5tr0n9password;;"
+    };
+
     var updatedStudent = {
         emailAddress: "tcl@eecs.uottawa.ca",
         phoneNumber: "6132222222",
@@ -54,16 +64,16 @@ describe("StudentsMeetStartup REST API", function () {
 
     it("can create a startup", function (done) {
         http.post("/startup", { "startup": startup }).test(function (response) {
-            expect(response).to.have.property("data");
-            expect(response.data).to.have.key("id");
-            expect(response.data.id).to.be.ok();
-            startupId = response.data.id;
+            expect(response).to.have.property("startup");
+            expect(response.startup).to.have.key("id");
+            expect(response.startup.id).to.be.ok();
+            startupId = response.startup.id;
             startup.id = startupId;
 
             delete startup.username;
             delete startup.password;
 
-            expect(response.data).to.eql(startup);
+            expect(response.startup).to.eql(startup);
 
             done();
         });
@@ -71,36 +81,47 @@ describe("StudentsMeetStartup REST API", function () {
     
     it("can find a statup", function (done) {
         http.get("/startup/" + startupId).test(function (response) {
-            expect(response).to.have.property("data");
-            expect(response.data).to.eql(startup);
+            expect(response).to.have.property("startup");
+            expect(response.startup).to.eql(startup);
+            done();
+        });
+    });
+    
+    it("can login as a startup", function (done) {
+        http.post("/login", startupCredentials).test(function (response, headers) {
+            expect(response).to.have.property("startup");
+            expect(response.startup).to.eql(startup);
+            expect(headers).to.have.key("set-cookie");
+            expect(headers["set-cookie"][0]).to.match(/^connect\.sid/);
+
             done();
         });
     });
 
     it("can update a startup", function (done) {
         http.put("/startup/" + startupId, {"startup": updatedStartup}).test(function (response) {
-            expect(response).to.have.property("data");
-            expect(response.data).to.eql(_.extend(startup, updatedStartup));
+            expect(response).to.have.property("startup");
+            expect(response.startup).to.eql(_.extend(startup, updatedStartup));
             done();
         });
     });
 
     it("can create a student", function (done) {
         http.post("/student", { "student": student }).test(function (response) {
-            expect(response).to.have.property("data");
+            expect(response).to.have.property("student");
 
-            expect(response.data).to.have.key("id");
-            expect(response.data.id).to.be.ok();
-            studentId = student.id = response.data.id;
+            expect(response.student).to.have.key("id");
+            expect(response.student.id).to.be.ok();
+            studentId = student.id = response.student.id;
 
-            expect(response.data).to.have.key("accountId");
-            expect(response.data.accountId).to.be.ok();
-            student.accountId = response.data.accountId;
+            expect(response.student).to.have.key("accountId");
+            expect(response.student.accountId).to.be.ok();
+            student.accountId = response.student.accountId;
             
             delete student.username;
             delete student.password;
-
-            expect(response.data).to.eql(student);
+            
+            expect(response.student).to.eql(student);
 
             done();
         });
@@ -108,16 +129,27 @@ describe("StudentsMeetStartup REST API", function () {
     
     it("can find a student", function (done) {
         http.get("/student/" + studentId).test(function (response) {
-            expect(response).to.have.property("data");
-            expect(response.data).to.eql(student);
+            expect(response).to.have.property("student");
+            expect(response.student).to.eql(student);
+            done();
+        });
+    });
+    
+    it("can login as a student", function (done) {
+        http.post("/login", studentCredentials).test(function (response, headers) {
+            expect(response).to.have.property("student");
+            expect(response.student).to.eql(student);
+            expect(headers).to.have.key("set-cookie");
+            expect(headers["set-cookie"][0]).to.match(/^connect\.sid/);
+
             done();
         });
     });
     
     it("can update a student", function (done) {
         http.put("/student/" + studentId, {"student": updatedStudent}).test(function (response) {
-            expect(response).to.have.property("data");
-            expect(response.data).to.eql(_.extend(student, updatedStudent));
+            expect(response).to.have.property("student");
+            expect(response.student).to.eql(_.extend(student, updatedStudent));
             done();
         });
     });
@@ -126,12 +158,12 @@ describe("StudentsMeetStartup REST API", function () {
         meetup.startupId = startupId;
 
         http.post("/meetup", { "meetup": meetup }).test(function (response) {
-            expect(response).to.have.property("data");
-            expect(response.data).to.have.key("id");
-            expect(response.data.id).to.be.ok();
-            meetupId = meetup.id = response.data.id;
+            expect(response).to.have.property("meetup");
+            expect(response.meetup).to.have.key("id");
+            expect(response.meetup.id).to.be.ok();
+            meetupId = meetup.id = response.meetup.id;
 
-            expect(response.data).to.eql(meetup);
+            expect(response.meetup).to.eql(meetup);
 
             done();
         });
@@ -162,12 +194,14 @@ describe("StudentsMeetStartup REST API", function () {
         var method = superagent[httpVerb];
 
         this.test = function (testFunction) {
-            method(url).send(data).end(function (error, response) {
+            method(url)
+            .send(data)
+            .end(function (error, response) {
                 expect(response.status).to.be(200);
                 expect(error).to.eql(null);
                 expect(response.body).to.have.property("success");
                 expect(response.body.success).to.be(true);
-                testFunction(response.body);
+                testFunction(response.body, response.headers);
             });
         };
 

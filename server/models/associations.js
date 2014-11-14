@@ -1,14 +1,13 @@
+/**
+ * Define associations between objects
+ *
+ * Copyright (c) 2014, Patrice Boulet & Nicholas Gagnon
+ * All rights reserved.
+ */
 
-module.exports = function (db) {
-    var Student = db.models.student;
-    var Startup = db.models.startup;
-    var UserAccount = db.models.useraccount;
-    var UserType = db.models.usertype;
-    var Meetup = db.models.meetup;
-    var Review = db.models.review;
-
+module.exports = function () {
     /* 1 Student -- 1 UserAccount */
-    Student.hasOne("account", UserAccount, { reverse: "student",
+    Student.hasOne("account", UserAccount, { reverse: "students",
         field: { "accountId": { type: "integer", name: "accountId", mapsTo: "account_id" } } });
     /* 1 Startup -- * UserAccount */
     Startup.hasMany("accounts", UserAccount, {}, { reverse: "startups",

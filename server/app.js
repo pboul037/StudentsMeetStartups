@@ -6,10 +6,13 @@
  */
 
 var express = require("express"),
-    async = require("async"),
+    session = require("express-session"),
     bodyParser = require("body-parser"),
+    async = require("async"),
     _ = require("lodash"),
+    passport = require("passport"),
     database = require("./lib/database"),
+    authentication = require("./lib/authentication"),
     responseHandler = require("./lib/response-handler"),
     config  = require("./config");
 
@@ -18,32 +21,48 @@ config = config[process.env.NODE_ENV];
 
 /* Configure the framework */
 var app = express();
+
 app.enable("trust proxy");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(session({
+    secret: "iab+<8J57'a_77{0I9kQ-5lT", 
+    resave: true,
+    saveUninitialized: true}));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(database.connection(config.dataSourceName));
 app.use(responseHandler);
+
+passport.use(authentication.initialize(passport));
 
 /* Define the routes */
 app.get("/", function (request, response) {
     response.sendFile("index.html", {root: "../client/"});
 });
 
+app.post("/login", passport.authenticate("local"), function (request, response) {
+    var userAccount = request.user;
+
+    userAccount.isStudentAccount(function (error, isStudentAccount) {
+        if (error)
+            response.fail(error);
+        else if (isStudentAccount)
+            response.put("student", userAccount.getStudent.bind(userAccount));
+        else
+            response.put("startup", userAccount.getStartup.bind(userAccount));
+    });
+});
+
 app.get('/startups', function (request, response) {
-    var Startup = request.models.startup;
-    response.put(Startup.find.bind(Startup));
+    response.put("startups", Startup.find.bind(Startup));
 });
 
 app.get('/startup/:id', function (request, response) {
-    var Startup = request.models.startup;
-    response.put(Startup.get.bind(Startup, request.params.id));
+    response.put("startup", Startup.get.bind(Startup, request.params.id));
 });
 
 app.post('/startup', function (request, response) {
-    var UserType = request.models.usertype;
-    var UserAccount = request.models.useraccount;
-    var Startup = request.models.startup;
-
     var startup = _.omit(request.body.startup, "username", "password");
     var userAccount = _.pick(request.body.startup, "username", "password");
 
@@ -60,7 +79,7 @@ app.post('/startup', function (request, response) {
                 callback(error, startup);   
             });
         }
-    ], response.handle);
+    ], response.handle("startup"));
 
     function createUserAccount(callback)
     {
@@ -75,32 +94,24 @@ app.post('/startup', function (request, response) {
 });
 
 app.put('/startup/:id', function (request, response) {
-    var Startup = request.models.startup;
-
     async.waterfall([
         Startup.get.bind(Startup, request.params.id),
         function (startup, callback) {
             _.extend(startup, request.body.startup);
             startup.save(callback);
         }
-    ], response.handle);
+    ], response.handle("startup"));
 });
 
 app.get('/students', function (request, response) {
-    var Student = request.models.student;
-    response.put(Student.find.bind(Student));
+    response.put("students", Student.find.bind(Student));
 });
 
 app.get('/student/:id', function (request, response) {
-    var Student = request.models.student;
-    response.put(Student.get.bind(Student, request.params.id));
+    response.put("student", Student.get.bind(Student, request.params.id));
 });
 
 app.post('/student', function (request, response) {
-    var UserType = request.models.usertype;
-    var UserAccount = request.models.useraccount;
-    var Student = request.models.student;
-
     var student = _.omit(request.body.student, "username", "password");
     var userAccount = _.pick(request.body.student, "username", "password");
 
@@ -114,30 +125,24 @@ app.post('/student', function (request, response) {
             student.accountId = userAccount.id;
             Student.create(student, callback);
         }
-    ], response.handle);
+    ], response.handle("student"));
 });
 
 app.put('/student/:id', function (request, response) {
-    var Student = request.models.student;
-
     async.waterfall([
         Student.get.bind(Student, request.params.id),
         function (student, callback) {
             _.extend(student, request.body.student);
             student.save(callback);
         }
-    ], response.handle);
+    ], response.handle("student"));
 });
 
 app.post("/meetup", function (request, response) {
-    var Meetup = request.models.meetup;
-    response.put(Meetup.create.bind(Meetup, request.body.meetup));
+    response.put("meetup", Meetup.create.bind(Meetup, request.body.meetup));
 });
 
 app.post("/meetup/participant", function (request, response) {
-    var Meetup = request.models.meetup;
-    var Student = request.models.student;
-
     async.waterfall([
         async.series.bind(async, [
             Student.get.bind(Student, request.body.studentId, {only: ["id"]}),
@@ -149,7 +154,7 @@ app.post("/meetup/participant", function (request, response) {
 
             meetup.addParticipants(student, callback);
         }
-    ], response.handle);
+    ], response.handle("meetup"));
 });
 
 /* Start listening for connections */

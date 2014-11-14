@@ -12,21 +12,24 @@ module.exports.connection = function (dataSourceName)
 {
     return orm.express(dataSourceName, { define: function (db, models, next) {
         async.series([
-            loadModel("meetup"),
-            loadModel("student"),
-            loadModel("startup"),
-            loadModel("useraccount"),
-            loadModel("review"),
-            loadModel("usertype"),
+            loadModel("meetup", "Meetup"),
+            loadModel("student", "Student"),
+            loadModel("startup", "Startup"),
+            loadModel("useraccount", "UserAccount"),
+            loadModel("review", "Review"),
+            loadModel("usertype", "UserType"),
             loadAssociations
         ], handleError);
 
-        function loadModel(name)
+        function loadModel(name, identifier)
         {
             return function (cb) {
                 db.load("../models/" + name, function (error) {
                     if (!error)
+                    {
                         models[name] = db.models[name];
+                        global[identifier] = db.models[name];
+                    }
                     cb(error);
                 });
             };

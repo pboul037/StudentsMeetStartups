@@ -5,11 +5,14 @@
     "private": true,
     "dependencies": {
         "express": "4.*",
+        "body-parser": "1.9.*",
+        "express-session": "1.9.*",
         "mysql": "2.*",
         "orm": "2.1.*",
         "async": "0.9.*",
-        "body-parser": "1.9.*",
-        "lodash": "2.4.*"
+        "lodash": "2.4.*",
+        "passport": "0.2.*",
+        "passport-local": "1.*"
     },
     "devDependencies": {
         "db-migrate": "0.7.*",

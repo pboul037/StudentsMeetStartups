@@ -11,6 +11,11 @@ module.exports = function (db, cb) {
                     callback(error, startups[0]);
                 });
             },
+            getStudent: function (callback) {
+                this.getStudents(function (error, students) {
+                    callback(error, students[0]);
+                });
+            },
             isStudentAccount: function (callback) {
                 this.getType(function (error, type) {
                     callback(error, type.name == 'student');
@@ -20,6 +25,9 @@ module.exports = function (db, cb) {
                 this.getType(function (error, type) {
                     callback(error, type.name == 'startup');
                 });
+            },
+            validPassword: function (password) {
+                return (this.password == password);
             }
         }
     });

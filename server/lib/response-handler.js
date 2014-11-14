@@ -1,21 +1,32 @@
 
-module.exports = function (request, response, next)
-{
-    response.put = function (compute)
-    {
-        compute(handleResponse);
+module.exports = function (request, response, next) {
+    response.put = function (key, task) {
+        task(handleResponse.bind(this, key));
     };
 
-    response.handle = handleResponse;
+    response.handle = function (key) {
+        return handleResponse.bind(this, key);
+    };
     
-    function handleResponse(error, data)
+    response.fail = function (error) {
+        response.json({ "success": false, "error": error });
+    };
+    
+    function handleResponse(key, error, data)
     {
+        var jsonResponse = {};
+
         if (error)
-            response.json({success: false, error: error});
-        else if (data)
-            response.json({success: true, data: data});
+            jsonResponse = {success: false, error: error};
+        else if (!data)
+            jsonResponse = {success: true};
         else
-            response.json({success: true});
+        {
+            jsonResponse.success = true;
+            jsonResponse[key] = data;
+        }
+            
+        response.json(jsonResponse);
     }
 
     next();
