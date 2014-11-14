@@ -8,7 +8,7 @@ define(function (require) {
     var loginUrl = 'http://192.168.56.101/login';
 
     return {
-        name: ko.observable('Nicholas Gagnon'),
+        name: ko.observable(''),
         username: ko.observable(),
         password: ko.observable(),
         passwordConfirmation: ko.observable(),
@@ -30,7 +30,7 @@ define(function (require) {
             http
             .post(url, {student: self.toJSON()})
             .then(function (data) {
-                return http.post(loginUrl, {username: self.username(), password: self.password()}); })
+                return http.post(url, {username: self.username(), password: self.password()}); })
             .then(function (data) { dialog.close(self); router.navigate('dashboard'); })
             .fail(function (error) { self.errorMessage(error.responseText); })
             .done();
