@@ -2,7 +2,7 @@ define(['durandal/app', 'plugins/router', 'knockout'], function (app, router, ko
 
     return {
         createNewMeetup: function(item){
-            item.viewUrl = 'views/newMeetupModal';
+            item.viewUrl = 'views/createMeetupModal';
             app.showDialog(item);  
         },
         browse: function(){
