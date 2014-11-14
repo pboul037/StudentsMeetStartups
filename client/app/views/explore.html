@@ -5,5 +5,16 @@
                 <h1>Explore</h1>
             </div>
         </div>
+        <div class="row" data-bind="foreach: exploreItems">
+          <div class="col-sm-3">
+            <div class="thumbnail">
+              <img data-bind="attr:{src: img}" alt="...">
+              <div class="caption">
+                <h3 data-bind="text: name"></h3>
+                <p><a href="#" class="btn btn-warning" role="button">Ping</a></p>
+              </div>
+            </div>
+          </div>
+        </div>
     </div>
 </section>
