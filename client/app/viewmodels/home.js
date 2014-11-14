@@ -22,7 +22,7 @@ define(function (require) {
             http
             .post(url, self)
             .then(function (data) { router.navigate('dashboard'); })
-            .fail(function (error) { console.log(error); self.errorMessage(error.responseText); })
+            .fail(function (error) { self.errorMessage(error.responseText); })
             .done();
         }
     };

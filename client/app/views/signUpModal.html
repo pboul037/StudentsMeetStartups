@@ -1,48 +1,46 @@
-<div class="modal-content autoclose">
+<div class="modal-content col-md-5 autoclose">
     <div class="modal-header">
         <h3>Sign me up!</h3>
     </div>
-    <form class="form-horizontal" role="form">
+    <form class="form-horizontal form-signup" role="form">
         <div class="container">
             <div class="row">
-                <div class="control-group col-sm-offset col-sm-4">
-                    <div class="controls">
-                        <label class="radio-inline">
-                            <input type="radio" name="inlineRadioOptions" id="studentInlineRadio" value="option2"> I'm a Student!
-                        </label>
-                        <label class="radio-inline">
-                            <input type="radio" name="inlineRadioOptions" id="startupInlineRadio" value="option3"> I'm a Startup!
-                        </label>
-                    </div>
+                <div class="form-group signup-type col-sm-5">
+                    <label class="radio-inline">
+                        <input type="radio" name="inlineRadioOptions" id="studentInlineRadio" value="option2"> I'm a Student!
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="inlineRadioOptions" id="startupInlineRadio" value="option3"> I'm a Startup!
+                    </label>
                 </div> 
             </div>
             <div class="row">
                 <div class="form-group">
-                        <label for="inputName" class="col-sm-2 control-label">Name</label>
-                        <div class="col-sm-9">
+                        <label for="inputName" class="col-sm-1 control-label">Name</label>
+                        <div class="col-sm-4">
                           <input type="text" class="form-control" id="inputName" placeholder="Full Name/Business Name">
                         </div>
                 </div>
                 <div class="form-group">
-                        <label for="inputEmail" class="col-sm-2 control-label">Email</label>
-                        <div class="col-sm-9">
-                          <input type="email" class="form-control" id="inputEmail" placeholder="Email">
+                        <label for="inputEmail" class="col-sm-1 control-label">Username</label>
+                        <div class="col-sm-4">
+                          <input type="text" class="form-control" id="inputEmail" placeholder="Username">
                         </div>
                 </div>
                 <div class="form-group">
-                        <label for="inputPassword" class="col-sm-2 control-label">Password</label>
-                        <div class="col-sm-9">
+                        <label for="inputPassword" class="col-sm-1 control-label">Password</label>
+                        <div class="col-sm-4">
                           <input type="password" class="form-control" id="inputPassword" placeholder="Password">
                         </div>
                 </div>
                 <div class="form-group">
-                        <label for="inputPasswordConfirm" class="col-sm-2 control-label">Confirm Password</label>
-                        <div class="col-sm-9">
+                        <label for="inputPasswordConfirm" class="col-sm-1 control-label">Confirm</label>
+                        <div class="col-sm-4">
                           <input type="password" class="form-control" id="inputPasswordConfirm" placeholder="Re-enter your password">
                         </div>
                 </div>
-                <div class="form-group">
-                          <button type="submit" class="center-block btn btn-primary">Let's go!</button>
+                <div class="form-group col-sm-5">
+                      <button type="submit" class="center-block btn btn-primary" data-bind="click: signup">Let's go!</button>
                 </div>
                 </div>
             </div>       
