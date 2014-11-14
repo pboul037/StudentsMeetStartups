@@ -15,8 +15,7 @@ define(function (require) {
             return {username: this.username, password: this.password};
         },
         signup: function (self) {
-            self.viewUrl = 'views/signUpModal';
-            app.showDialog(self);  
+            app.showDialog('viewmodels/signUpModal');  
         },
         login: function (self) {
             http
