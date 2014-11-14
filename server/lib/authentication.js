@@ -23,6 +23,8 @@ module.exports.initialize = function (passport)
         UserAccount.one({ "username": username }, function (error, userAccount) {
             if (error)
                 return done(error);
+            else if (!userAccount)
+                return done(null, false, { message: "Incorrect username" });
             else if (!userAccount.validPassword(password))
                 return done(null, false, { message: "Incorrect password." });
             else
