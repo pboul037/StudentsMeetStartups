@@ -5,7 +5,14 @@ requirejs.config({
         'plugins': '../lib/durandal/js/plugins',
         'transitions': '../lib/durandal/js/transitions',
         'knockout': '../lib/knockout/knockout-3.2.0',
-        'jquery': '../lib/jquery/jquery-1.9.1'
+        'jquery': '../lib/jquery/jquery-1.9.1',
+        'bootstrapvalidator': '../lib/bootstrapvalidator/js/bootstrapValidator'
+    },
+    shim: {
+        'boostrapvalidator': {
+            deps: ['jquery'],
+            exports: 'jQuery'
+       }
     }
 });
 
