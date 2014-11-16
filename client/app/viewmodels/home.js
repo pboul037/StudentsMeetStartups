@@ -1,5 +1,9 @@
 
-define(['durandal/app', 'plugins/http', 'plugins/router', 'knockout', 'viewmodels/signUpModal'], function (app, http, router, ko, SignUpModal) {
+define(function (require) {
+    var http = require('plugins/http'),
+        router = require('plugins/router'),
+        ko = require('knockout'),
+        SignUpModal = require('viewmodels/signUpModal');
     
     var url = 'http://192.168.56.101/login';
 

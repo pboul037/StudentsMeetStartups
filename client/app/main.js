@@ -1,3 +1,4 @@
+
 requirejs.config({
     paths: {
         'text': '../lib/require/text',
@@ -36,3 +37,5 @@ define(['durandal/system', 'durandal/app', 'durandal/viewLocator'], function (sy
         app.setRoot('viewmodels/shell');
     });
 });
+
+

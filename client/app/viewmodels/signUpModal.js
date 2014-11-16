@@ -1,5 +1,10 @@
-define(['durandal/app', 'plugins/http', 'plugins/router', 'knockout','plugins/dialog', 'bootstrapvalidator'], 
-            function (app, http, router, ko, dialog, bootstrapValidator) {
+
+define(function (require) {
+    var http = require('plugins/http'),
+        router = require('plugins/router'),
+        ko = require('knockout'),
+        dialog = require('plugins/dialog'),
+        validator = require('bootstrapvalidator');
            
     var loginUrl = 'http://192.168.56.101/login';
   
@@ -23,6 +28,8 @@ define(['durandal/app', 'plugins/http', 'plugins/router', 'knockout','plugins/di
     };
         
     SignUpModal.prototype.signup = function (self) {
+        console.log(self);
+        console.log(ko.toJSON(self));
         var url = 'http://192.168.56.101';
         url += self.accountType() == 'startup' ? '/startup' : '/student';
         http
@@ -40,3 +47,4 @@ define(['durandal/app', 'plugins/http', 'plugins/router', 'knockout','plugins/di
                 
     return SignUpModal;
 });
+
