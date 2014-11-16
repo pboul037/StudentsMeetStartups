@@ -7,6 +7,7 @@ requirejs.config({
         'transitions': '../lib/durandal/js/transitions',
         'knockout': '../lib/knockout/knockout-3.2.0',
         'jquery': '../lib/jquery/jquery-1.9.1',
+        'models': './models',
         'bootstrapvalidator': '../lib/bootstrapvalidator/js/bootstrapValidator'
     },
     shim: {

@@ -4,45 +4,65 @@ define(function (require) {
         router = require('plugins/router'),
         ko = require('knockout'),
         dialog = require('plugins/dialog'),
-        validator = require('bootstrapvalidator');
+        validator = require('bootstrapvalidator')
+        Student = require('models/student'),
+        Startup = require('models/startup');
            
-    var loginUrl = 'http://192.168.56.101/login';
-  
-    var SignUpModal = function() {
-        this.name = ko.observable('');
-        this.username = ko.observable();
-        this.password = ko.observable();
-        this.passwordConfirmation = ko.observable();
-        this.accountType = ko.observable();
-    };
-        
-    SignUpModal.prototype.toJSON = function () {
-        var res = {username: this.username, password: this.password};
-            
-        if (this.accountType() == 'startup')
-            res.companyName = this.name;
-        else
-            res.name = this.name;
+    function SignUpModal()
+    {
+        var self = this;
 
-        return res;
-    };
-        
-    SignUpModal.prototype.signup = function (self) {
-        console.log(self);
-        console.log(ko.toJSON(self));
-        var url = 'http://192.168.56.101';
-        url += self.accountType() == 'startup' ? '/startup' : '/student';
-        http
-        .post(url, {student: self.toJSON()})
-        .then(function (data) {
-            return http.post(loginUrl, {username: self.username, password: self.password}); })
-        .then(function (data) { dialog.close(self); router.navigate('dashboard'); })
-        .fail(function (error) { self.errorMessage(error.responseText); })
-        .done();
-    };
+        self.passwordConfirmation = ko.observable();
+        self.model = ko.observable({});
+
+        self.accountType = ko.observable();
+
+        self.isStudentAccount = ko.computed(function () {
+            return (self.accountType() == 'student');
+        }, this);
+        self.isStartupAccount = ko.computed(function () {
+            return (self.accountType() == 'startup');
+        }, this);
     
-    SignUpModal.show = function(){
-        return dialog.show(new SignUpModal());
+        self.changeAccountType = function () {
+            if (self.isStudentAccount())
+                self.model(new Student);
+            else if (self.isStartupAccount())
+                self.model(new Startup);
+
+            return true;
+        };
+        
+        self.signup = function (self) {
+            self.model().save()
+            .then(login.bind(self))
+            .then(redirectToDashboard.bind(self))
+            .fail(showError)
+            .done();
+        };
+    }
+
+    function login()
+    {
+        var credentials = { 'username': this.model().username, 'password': this.model().password };
+        var url = 'http://192.168.56.101/login';
+
+        return http.post(url, credentials);
+    }
+
+    function redirectToDashboard()
+    {
+        dialog.close(this);
+        router.navigate('dashboard');
+    }
+
+    function showError(error)
+    {
+        /* @TODO */
+    }
+    
+    SignUpModal.show = function () {
+        return dialog.show(new SignUpModal);
     };
                 
     return SignUpModal;
