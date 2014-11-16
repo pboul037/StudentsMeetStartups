@@ -4,9 +4,11 @@ define(function (require) {
         router = require('plugins/router'),
         ko = require('knockout'),
         dialog = require('plugins/dialog'),
-        validator = require('bootstrapvalidator')
+        validator = require('bootstrapvalidator'),
         Student = require('models/student'),
         Startup = require('models/startup');
+
+    require('jquery.cookie');
            
     function SignUpModal()
     {
@@ -47,7 +49,12 @@ define(function (require) {
         var credentials = { 'username': this.model().username, 'password': this.model().password };
         var url = 'http://192.168.56.101/login';
 
-        return http.post(url, credentials);
+        return http.post(url, credentials).then(function (data) {
+            if (data.student)
+                $.cookie('connect.studentId', data.student.id);
+            else if (data.startup)
+                $.cookie('connect.startupId', data.startup.id);
+        });
     }
 
     function redirectToDashboard()
