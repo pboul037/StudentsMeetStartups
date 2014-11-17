@@ -1,22 +1,29 @@
-define(['durandal/app', 'plugins/router', 'knockout', 'jquery.cookie'], function (app, router, ko) {
 
-    return {
-        isStartup: ko.computed(function () {
-            return $.cookie('connect.startupId');
-        }, this),
-        isStudent: ko.computed(function () {
-            return $.cookie('connect.studentId');
-        }, this),
-        createNewMeetup: function(item){
-            item.viewUrl = 'views/createMeetupModal';
-            app.showDialog(item);  
-        },
-        browse: function(){
+define(function (require) {
+    var router = require('plugins/router'),
+        ko = require('knockout'),
+        session = require('session'),
+        CreateMeetupModal = require('viewmodels/createMeetupModal');
+
+    function MeetupsViewModel()
+    {
+        this.isStartup = ko.observable(session.connectedAsStartup());
+        this.isStudent = ko.observable(session.connectedAsStudent());
+
+        this.createNewMeetup = function () {
+            CreateMeetupModal.show();
+        };
+
+        this.browse = function () {
             router.navigate('explore');
-        },
-        writeReview: function(item){
-            item.viewUrl = 'views/writeReviewModal';
-            app.showDialog(item);  
-        },
-    };
+        };
+
+        this.writeReview = function () {
+
+        };
+    }
+
+    return new MeetupsViewModel;
 });
+
+

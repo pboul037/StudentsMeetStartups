@@ -3,27 +3,33 @@ define(function (require) {
     var http = require('plugins/http'),
         router = require('plugins/router'),
         ko = require('knockout'),
-        SignUpModal = require('viewmodels/signUpModal');
+        SignUpModal = require('viewmodels/signUpModal'),
+        session = require('session');
     
-    var url = 'http://192.168.56.101/login';
+    function HomeViewModel()
+    {
+        var self = this;
 
-    return {
-        username: ko.observable(),
-        password: ko.observable(),
-        errorMessage: ko.observable(),
-        toJSON: function () {
-            return {username: this.username, password: this.password};
-        },
-        signup: function(){
+        self.username = ko.observable();
+        self.password = ko.observable();
+
+        self.errorMessage = ko.observable();
+
+        self.signup = function () {
             SignUpModal.show();
-        },
-        login: function (self) {
-            http
-            .post(url, self)
-            .then(function (data) { router.navigate('dashboard'); })
-            .fail(function (error) { self.errorMessage(error.responseText); })
+        };
+
+        self.login = function () {
+            session.login(self.username(), self.password())
+            .fail(self.showError)
             .done();
-        }
-    };
+        };
+
+        self.showError = function (error) {
+            self.errorMessage(error.responseText);
+        };
+    }
+
+    return new HomeViewModel;
 });
 

@@ -9,6 +9,7 @@ requirejs.config({
         'jquery': '../lib/jquery/jquery-1.9.1',
         'jquery.cookie': '../lib/jquery/plugins/jquery.cookie-1.4.1.min',
         'models': './models',
+        'session': './lib/session',
         'bootstrapvalidator': '../lib/bootstrapvalidator/js/bootstrapValidator'
     },
     shim: {

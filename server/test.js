@@ -59,7 +59,8 @@ describe("StudentsMeetStartup REST API", function () {
     var meetup = {
         startTime: "2014-10-22 09:52:00",
         endTime: "2014-10-22 09:55:00",
-        numMaxParticipants: 6
+        numMaxParticipants: 6,
+        location: "Gloucester"
     };
 
     it("can create a startup", function (done) {

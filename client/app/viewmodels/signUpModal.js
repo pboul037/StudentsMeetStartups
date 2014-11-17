@@ -6,7 +6,8 @@ define(function (require) {
         dialog = require('plugins/dialog'),
         validator = require('bootstrapvalidator'),
         Student = require('models/student'),
-        Startup = require('models/startup');
+        Startup = require('models/startup'),
+        session = require('session');
 
     require('jquery.cookie');
            
@@ -37,24 +38,10 @@ define(function (require) {
         
         self.signup = function (self) {
             self.model().save()
-            .then(login.bind(self))
-            .then(redirectToDashboard.bind(self))
+            .then(session.login.bind(session, self.model().username, self.model().password))
             .fail(showError)
             .done();
         };
-    }
-
-    function login()
-    {
-        var credentials = { 'username': this.model().username, 'password': this.model().password };
-        var url = 'http://192.168.56.101/login';
-
-        return http.post(url, credentials).then(function (data) {
-            if (data.student)
-                $.cookie('connect.studentId', data.student.id);
-            else if (data.startup)
-                $.cookie('connect.startupId', data.startup.id);
-        });
     }
 
     function redirectToDashboard()
