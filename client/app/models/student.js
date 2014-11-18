@@ -11,21 +11,23 @@ define(function (require) {
         this.emailAddress = '';
         this.phoneNumber = '';
         this.selfDescription = '';
-        this.resume = null;
-        this.transcript = null;
+        /* resume is optional */
+        /* transcript is optional */
     }
 
     Student.get = function (id) {
-        return http.get(apiUrl + '/' + id);
+        return http.get(apiUrl + '/' + id).then(function (response) {
+            return $.extend(new Student, response.student); 
+        });
     };
 
     Student.prototype.save = function () {
         if (this.id == null)
             return http.post(apiUrl, { 'student': this });
         else
-            return http.put(apiUrl, { 'student': this });
+            return http.put(apiUrl + '/' + this.id, { 'student': this });
     };
-
+    
     return Student;
 });
 

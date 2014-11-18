@@ -2,11 +2,16 @@
     <div class=container-fluid>
         <div class="row">
             <div class="col-sm-offset-5 col-sm=7">
-                <h1>Dashboard</h1>
+                <!-- ko if: information.isStudent -->
+                <h1>Hello, <!--ko text:name--><!--/ko--></h1>
+                <!-- /ko -->
+                <!-- ko if: information.isStartup -->
+                <h1>Welcome, <!--ko text:name--><!--/ko--></h1>
+                <!-- /ko -->
             </div>
         </div>
         <div class="row">
-            <div id="leftColumnLayout" class="col-sm-8">
+            <div id="leftColumnLayout" class="col-sm-7">
                 <div class="row">
                     <div class="col-sm-12" data-bind="compose:'viewmodels/meetups'"></div>
                 </div>
@@ -14,9 +19,9 @@
                     <div class="col-sm-12" data-bind="compose:'viewmodels/recentlyExplored'"></div>
                 </div>
             </div>
-            <div id="rightColumnLayout" class="col-sm-4">
+            <div id="rightColumnLayout" class="col-sm-5">
                 <div class="row">
-                    <div class="col-sm-12" data-bind="compose:'viewmodels/information'"></div>
+                    <div class="col-sm-12" data-bind="compose: information"></div>
                 </div>
             </div>
         </div>

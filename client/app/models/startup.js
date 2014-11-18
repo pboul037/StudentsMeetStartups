@@ -14,14 +14,16 @@ define(function (require) {
     }
 
     Startup.get = function (id) {
-        return http.get(apiUrl + '/' + id);
+        return http.get(apiUrl + '/' + id).then(function (response) {
+            return $.extend(new Startup, response.startup); 
+        });
     };
 
     Startup.prototype.save = function () {
         if (this.id == null)
             return http.post(apiUrl, { 'startup': this });
         else
-            return http.put(apiUrl, { 'startup': this });
+            return http.put(apiUrl + '/' + this.id, { 'startup': this });
     };
 
     return Startup;

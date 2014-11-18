@@ -9,8 +9,6 @@ define(function (require) {
         Startup = require('models/startup'),
         session = require('session');
 
-    require('jquery.cookie');
-           
     function SignUpModal()
     {
         var self = this;

@@ -59,9 +59,9 @@ define(function (require) {
         };
 
         self.getUser = function () {
-            if (self.connectedAsStartup)
+            if (self.connectedAsStartup())
                 return Startup.get(self.startupId);
-            else if (self.connectedAsStudent)
+            else if (self.connectedAsStudent())
                 return Student.get(self.studentId);
             else
                 return $.Deferred().reject('Not connected').promise();
