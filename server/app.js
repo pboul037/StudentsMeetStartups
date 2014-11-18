@@ -6,6 +6,8 @@
  */
 
 var express = require("express"),
+    fs = require("fs"),
+    multipart = require("connect-multiparty"),
     session = require("express-session"),
     bodyParser = require("body-parser"),
     async = require("async"),
@@ -108,7 +110,12 @@ app.get('/students', function (request, response) {
 });
 
 app.get('/student/:id', function (request, response) {
-    response.put("student", Student.get.bind(Student, request.params.id));
+    async.waterfall([
+        Student.get.bind(Student, request.params.id),
+        function (student, callback) {
+            callback(null, _.omit(student, "transcript", "resume", "accountId"));
+        }
+    ], response.handle("student"));
 });
 
 app.post('/student', function (request, response) {
@@ -128,15 +135,39 @@ app.post('/student', function (request, response) {
     ], response.handle("student"));
 });
 
-app.put('/student/:id', function (request, response) {
+app.put("/student/:id", function (request, response) {
     async.waterfall([
         Student.get.bind(Student, request.params.id),
         function (student, callback) {
             _.extend(student, request.body.student);
+            _.omit(student, "transcript", "resume", "id", "accountId");
             student.save(callback);
         }
     ], response.handle("student"));
 });
+
+app.put("/student/:id/resume", multipart(), uploadStudentDocument("resume"));
+app.put("/student/:id/transcript", multipart(), uploadStudentDocument("transcript"));
+
+function uploadStudentDocument(documentName)
+{
+    return function (request, response) {
+        async.waterfall([
+            async.series.bind(async, [
+                Student.get.bind(Student, request.params.id),
+                fs.readFile.bind(fs, request.files['0'].path)
+            ]),
+            function (results, callback) {
+                var student = results[0],
+                    fileContents = results[1];
+
+                student[documentName] = fileContents;
+                student.save(callback);
+            },
+            fs.unlink.bind(fs, request.files['0'].path)
+        ], response.handle());
+    };
+}
 
 app.post("/meetup", function (request, response) {
     response.put("meetup", Meetup.create.bind(Meetup, request.body.meetup));

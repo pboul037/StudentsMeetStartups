@@ -12,11 +12,12 @@ define(function (require) {
     {
         var self = this;
         
+        self.resume = null;
+        self.transcript = null;
+
         self.activate = function () {
             return session.getUser().then(function (user) {
                 self.model = ko.mapping.fromJS(user);
-
-                console.log(self.model);
 
                 if (self.isStartup())
                 {
@@ -34,8 +35,57 @@ define(function (require) {
         self.isStartup = ko.observable(session.connectedAsStartup());
         self.isStudent = ko.observable(session.connectedAsStudent());
 
+        self.attached = function (view, parent) {
+            self.inputResume = $('#inputResume');
+            self.inputTranscript = $('#inputTranscript');
+
+            self.inputResume.on('change', function (event) {
+                self.resume = event.target.files;
+            });
+
+            self.inputTranscript.on('change', function (event) {
+                self.transcript = event.target.files;
+            });
+        };
+
         self.save = function () {
-            ko.mapping.toJS(self.model).save().done();
+            var save = ko.mapping.toJS(self.model).save();
+
+            if (self.isStudent())
+            {   
+                if (self.resume != null)
+                    save.then(self.uploadResume);
+                if (self.transcript != null)
+                    save.then(self.uploadTranscript);
+            }
+
+            save.done();
+        };
+
+        self.uploadResume = function () {
+            return self.uploadFile('resume', self.resume);
+        };
+
+        self.uploadTranscript = function () {
+            return self.uploadFile('transcript', self.transcript);
+        };
+
+        self.uploadFile = function (name, files) {
+            var data = new FormData();
+            
+            $.each(files, function (key, value) {
+                data.append(key, value);
+            });
+
+            return $.ajax({
+                url: 'http://192.168.56.101/student/' + self.model.id() + '/' + name,
+                type: 'PUT',
+                data: data,
+                cache: false,
+                dataType: 'json',
+                processData: false,
+                contentType: false
+            });
         };
     }
 
