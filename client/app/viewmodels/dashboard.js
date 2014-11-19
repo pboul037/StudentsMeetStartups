@@ -2,7 +2,8 @@
 define(function (require) {
     var app = require('durandal/app'),
         ko = require('knockout'),
-        InformationViewModel = require('viewmodels/information');
+        InformationViewModel = require('viewmodels/information'),
+        session = require('session');
 
     function DashboardViewModel()
     {
@@ -15,6 +16,10 @@ define(function (require) {
                 self.name(newName);
             });
             return self.information.activate();
+        };
+        
+        self.logout = function () {
+            session.logout();
         };
     }
 

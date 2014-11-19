@@ -1,7 +1,15 @@
-define(['plugins/http', 'durandal/app', 'knockout'], function (http, app, ko) {
+define(function (require) {
+    var app = require('durandal/app'),
+        ko = require('knockout'),
+        http = require('plugins/http'),
+        session = require('session');
 
     return {
         exploreItems: ko.observableArray([]),
+        logout : function () {
+            session.logout();
+        },
+        
         activate: function () {
             
             var imgPlaceholder = 'http://placehold.it/200';
@@ -47,6 +55,7 @@ define(['plugins/http', 'durandal/app', 'knockout'], function (http, app, ko) {
                 new ExploreItem(29, 'Student', 'Jim Morrison', imgPlaceholder),
                 new ExploreItem(30, 'Student', 'Tommy Franks', imgPlaceholder),
 			];
+            
             return this.exploreItems(dummyExploreItems);
         }
     };
