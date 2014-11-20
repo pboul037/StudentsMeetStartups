@@ -31,47 +31,45 @@ define(function (require) {
         ko.validation.registerExtenders();
 
         var self = this;
-        self.errors = ko.validation.group(self, { deep: true });
-        self.errorsComputed = ko.computed(function() {
-            return self.errors().length > 0;
-        }, self);
+        
+        self.credentials = ko.validatedObservable({
+            username : ko.observable()
+                .extend({
+                    required: true,
+                    minLength:4
+            }),
+            password : ko.observable()
+                .extend({
+                    required: true,
+                    passwordComplexity: {
+                        params: self.password
+                    },
+                    minLength: 6
+            }),
+        });
+        
+        self.passwordConfirmation = ko.validatedObservable()
+                .extend({ areSame: { 
+                    params: self.credentials().password, 
+                    message: "Confirm password must match password"}
+        });
+        
+        self.name = ko.validatedObservable()
+            .extend({
+                required: true
+        }),
+        self.companyName = ko.validatedObservable()
+                .extend({
+                    required: true
+        }); 
+        
+        self.nameIsValid = ko.computed( function() {
+            return self.name.isValid() || self.companyName.isValid();
+        }, this);
         
         self.model = ko.observable({});
-        
         self.model(new Student);
-        self.accountType = ko.observable('student');
-                
-        self.name = ko.observable('')
-            .extend({
-                required: true
-        });
-        
-        self.companyName = ko.observable('')
-            .extend({
-                required: true
-        });
-        
-        self.username = ko.observable('')
-            .extend({
-                required: true,
-                minLength:4
-        });
-        
-        self.password = ko.observable('')
-            .extend({
-                required: true,
-                passwordComplexity: {
-                    params: self.password
-                },
-                minLength: 6
-        });
-        
-        self.passwordConfirmation = ko.observable('')
-            .extend({ areSame: { 
-                params: self.password, 
-                message: "Confirm password must match password"}
-        });
-        
+        self.accountType = ko.observable('student');      
         
         
         self.isStudentAccount = ko.computed(function () {
@@ -82,23 +80,25 @@ define(function (require) {
         }, this);
     
         self.changeAccountType = function () {
-            if (self.isStudentAccount())
+            if (self.isStudentAccount()){
                 self.model(new Student);
-            else if (self.isStartupAccount())
+                self.companyName(undefined);
+            }else if (self.isStartupAccount()){
                 self.model(new Startup);
-
+                self.name(undefined);
+            }
             return true;
         };
         
         self.signup = function (self) {
             self.model().name = self.name();
-            self.model().username = self.username();
-            self.model().password = self.password();
+            self.model().username = self.credentials().username();
+            self.model().password = self.credentials().password();
             self.model().companyName = self.companyName();
             ko.mapping.toJS(self.model).save()
-            .then(session.login.bind(session, self.username(),self.password()))
+            .then(session.login.bind(session, self.credentials().username(),self.credentials().password()))
             .fail(showError)
-            .done(dialog.close(this));
+            .done(dialog.close(this)); 
         };       
     }
 

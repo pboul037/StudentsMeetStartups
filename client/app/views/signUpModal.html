@@ -47,14 +47,14 @@
                     <label for="inputEmail" class="col-sm-1 control-label">Username</label>
                     <div class="col-sm-4">
                       <input type="text" class="form-control" id="inputEmail" name="username" placeholder="Username" 
-                             data-bind="value: username, valueUpdate: 'afterkeydown'" />
+                             data-bind="value: credentials().username, valueUpdate: 'afterkeydown'" />
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputPassword" class="col-sm-1 control-label">Password</label>
                     <div class="col-sm-4">
                       <input type="password" class="form-control" id="inputPassword" placeholder="Password" 
-                             data-bind="value: password, valueUpdate: 'afterkeydown'" />
+                             data-bind="value: credentials().password, valueUpdate: 'afterkeydown'" />
                     </div>
                 </div>
                 <div class="form-group">
@@ -65,7 +65,7 @@
                     </div>
                 </div>
                 <div class="form-group col-sm-5">
-                      <button type="submit" class="center-block btn btn-primary" data-bind="click: signup">Let's go!</button>
+                      <button type="submit" class="center-block btn btn-primary" data-bind="click: signup, enable: credentials.isValid() && passwordConfirmation.isValid() && (name.isValid() || companyName.isValid())">Let's go!</button>
                 </div>
                 </div>
             </div>       

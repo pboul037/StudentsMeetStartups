@@ -4,17 +4,51 @@ define(function (require) {
         Meetup = require('models/meetup'),
         session = require('session');
 
+    ko.mapping = require('knockout.mapping');
+    ko.validation = require('knockout.validation');
+    
     function CreateMeetupModal()
     {
         var self = this;
-
-        self.meetup = ko.observable(new Meetup(session.startupId));
+        
+        self.meetup = ko.validatedObservable({
+            id: ko.observable(null),
+            startupId: ko.observable(session.startupId)
+                .extend({
+                required: true
+            }),
+            startTime : ko.observable()
+                .extend({
+                required: true
+            }),
+            endTime : ko.observable()
+                .extend({
+                    required: true
+            }),
+            numMaxParticipants : ko.observable()
+                .extend({
+                    required: true,
+                    maxLength: 15
+            }),
+            location : ko.observable()
+                .extend({
+                    required: true,
+                    minLength: 5
+            })
+        });
 
         self.createMeetup = function () {
-            self.meetup().save()
+            self.meetupData = new Meetup(session.startupId);
+            self.meetupData.id = self.meetup().id();
+            self.meetupData.startupId = self.meetup().startupId();
+            self.meetupData.startTime = self.meetup().startTime();
+            self.meetupData.endTime = self.meetup().endTime();
+            self.meetupData.numMaxParticipants = self.meetup().numMaxParticipants();
+            
+            self.meetupData.save()
             .fail(self.showError)
             .then(self.close)
-            .done();
+            .done(); 
         };
 
         self.close = function () {
