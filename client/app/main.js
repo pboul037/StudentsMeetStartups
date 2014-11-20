@@ -7,20 +7,19 @@ requirejs.config({
         'transitions': '../lib/durandal/js/transitions',
         'knockout': '../lib/knockout/knockout-3.2.0',
         'knockout.mapping': '../lib/knockout/knockout.mapping-2.4.1',
+        'knockout.validation': '../lib/knockout/knockout.validation',
         'jquery': '../lib/jquery/jquery-1.9.1',
         'jquery.cookie': '../lib/jquery/plugins/jquery.cookie-1.4.1.min',
         'models': './models',
         'session': './lib/session',
-        'bootstrapvalidator': '../lib/bootstrapvalidator/js/bootstrapValidator'
     },
     shim: {
         'jquery.cookie': {
             deps: ['jquery']
         },
-        'boostrapvalidator': {
-            deps: ['jquery'],
-            exports: 'jQuery'
-       }
+        'knockout.validation':{
+            deps: ['knockout']
+        }
     }
 });
 
