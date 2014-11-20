@@ -20,6 +20,10 @@ define(function (require) {
             return $.extend(new Student, response.student); 
         });
     };
+    
+    Student.getAll = function () {
+        return http.get(apiUrl + 's');
+    };
 
     Student.prototype.save = function () {
         if (this.id == null)
