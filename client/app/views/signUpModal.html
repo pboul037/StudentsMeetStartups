@@ -21,8 +21,7 @@
                 <div class="form-group">
                     <label for="inputName" class="col-sm-1 control-label">Name</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputName" placeholder="Full Name" 
-                               data-bind="value: name, valueUpdate: 'afterkeydown'" />
+                        <input type="text" class="form-control" id="inputName" placeholder="Full Name" data-bind="value: model().name" />
                     </div>
                 </div>
                 <!-- /ko -->
@@ -30,8 +29,7 @@
                 <div class="form-group">
                     <label for="inputName" class="col-sm-1 control-label">Name</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputName" placeholder="Business Name" 
-                               data-bind="value: companyName, valueUpdate: 'afterkeydown'" />
+                        <input type="text" class="form-control" id="inputName" placeholder="Business Name" data-bind="value: model().companyName" />
                     </div>
                 </div>
                 <!-- /ko -->
@@ -46,22 +44,19 @@
                 <div class="form-group">
                     <label for="inputEmail" class="col-sm-1 control-label">Username</label>
                     <div class="col-sm-4">
-                      <input type="text" class="form-control" id="inputEmail" name="username" placeholder="Username" 
-                             data-bind="value: username, valueUpdate: 'afterkeydown'" />
+                      <input type="text" class="form-control" id="inputEmail" placeholder="Username" data-bind="value: model().username" />
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputPassword" class="col-sm-1 control-label">Password</label>
                     <div class="col-sm-4">
-                      <input type="password" class="form-control" id="inputPassword" placeholder="Password" 
-                             data-bind="value: password, valueUpdate: 'afterkeydown'" />
+                      <input type="password" class="form-control" id="inputPassword" placeholder="Password" data-bind="value: model().password" />
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputPasswordConfirm" class="col-sm-1 control-label">Confirm</label>
                     <div class="col-sm-4">
-                      <input type="password" class="form-control" id="inputPasswordConfirm" placeholder="Re-enter your password" 
-                             data-bind="value: passwordConfirmation, valueUpdate: 'afterkeydown'">
+                      <input type="password" class="form-control" id="inputPasswordConfirm" placeholder="Re-enter your password" data-bind="value: passwordConfirmation">
                     </div>
                 </div>
                 <div class="form-group col-sm-5">
