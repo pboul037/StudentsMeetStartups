@@ -5,25 +5,11 @@ define(function (require) {
         Student = require('models/student'),
         Startup = require('models/startup'),
         session = require('session'),
-        toastr = require('toastr');
+        notify = require('notify');
 
     ko.mapping = require('knockout.mapping');
     ko.validation = require('knockout.validation');
-    toastr.options = {
-      "closeButton": false,
-      "debug": false,
-      "progressBar": false,
-      "positionClass": "toast-bottom-full-width",
-      "onclick": null,
-      "showDuration": "500",
-      "hideDuration": "500",
-      "timeOut": "500",
-      "extendedTimeOut": "1000",
-      "showEasing": "swing",
-      "hideEasing": "linear",
-      "showMethod": "fadeIn",
-      "hideMethod": "fadeOut"
-    }
+    
     function InformationViewModel()
     {
         var self = this;
@@ -35,6 +21,8 @@ define(function (require) {
             
             return session.getUser().done(function (user) {
                 self.model = ko.mapping.fromJS(user);
+                self.isStartup = ko.observable(session.connectedAsStartup());
+                self.isStudent = ko.observable(session.connectedAsStudent());
                 
                 if (self.isStartup())
                 {
@@ -77,12 +65,8 @@ define(function (require) {
                 
                 self.studentOrStartupName.subscribe(function (newValue) { app.trigger('information:name-changed', newValue); });
                 self.studentOrStartupName.valueHasMutated();
-                
             });
         };
-        
-        self.isStartup = ko.observable(session.connectedAsStartup());
-        self.isStudent = ko.observable(session.connectedAsStudent());
         
         self.attached = function (view, parent) {
             self.inputResume = $('#inputResume');
@@ -100,8 +84,8 @@ define(function (require) {
         self.save = function () {
             
             var modelToSave = ko.mapping.toJS(self.model);
-            modelToSave.phoneNumber = self.dataModel().phoneNumber();
-            modelToSave.emailAddress = self.dataModel().emailAddress();
+            modelToSave.phoneNumber = self.phoneNumber();
+            modelToSave.emailAddress = self.emailAddress();
             
             if( self.isStudent()){
                 modelToSave.name = self.studentOrStartupName();
@@ -109,7 +93,7 @@ define(function (require) {
             }else if (self.isStartup()){
                 modelToSave.companyName = self.studentOrStartupName();
                 modelToSave.description = self.studentOrStartupDescription();
-                modelToSave.postalAddress = self.dataModel().postalAddress();
+                modelToSave.postalAddress = self.postalAddress();
             }
             
             var save = modelToSave.save();
@@ -122,8 +106,8 @@ define(function (require) {
                     save.then(self.uploadTranscript);
             }
 
-            save.done( function(){
-                toastr.success('Saved!', { fadeAway: 100,  });
+            save.done(function () {
+                notify.success('Saved!', { fadeAway: 100 });
             });
         };
 

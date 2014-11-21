@@ -12,6 +12,7 @@ requirejs.config({
         'jquery.cookie': '../lib/jquery/plugins/jquery.cookie-1.4.1.min',
         'models': './models',
         'session': './lib/session',
+        'notify': './lib/notify',
         'toastr': '../lib/toastr/toastr.min'
     },
     shim: {

@@ -6,26 +6,11 @@ define(function (require) {
         Student = require('models/student'),
         Startup = require('models/startup'),
         session = require('session'),
-        toastr = require('toastr')
+        notify = require('notify');
 
     ko.mapping = require('knockout.mapping');
     ko.validation = require('knockout.validation');
-    toastr.options = {
-      "closeButton": false,
-      "debug": false,
-      "progressBar": false,
-      "positionClass": "toast-bottom-full-width",
-      "onclick": null,
-      "showDuration": "750",
-      "hideDuration": "750",
-      "timeOut": "1000",
-      "extendedTimeOut": "1000",
-      "showEasing": "swing",
-      "hideEasing": "linear",
-      "showMethod": "fadeIn",
-      "hideMethod": "fadeOut"
-    }
-    
+
     function SignUpModal()
     {       
          ko.validation.rules['areSame'] = {
@@ -115,7 +100,7 @@ define(function (require) {
             .then(session.login.bind(session, self.credentials().username(),self.credentials().password()))
             .fail(showError)
             .done(function(){
-                  toastr.success('Thank you for registering!');
+                  notify.success('Thank you for registering!');
                   dialog.close(this)
             }); 
         };       
