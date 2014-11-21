@@ -38,7 +38,7 @@ define(function (require) {
                 
                 if (self.isStartup())
                 {
-                    self.studentOrStartupName = ko.validatedObservableObservable(self.model.companyName())
+                    self.studentOrStartupName = ko.validatedObservable(self.model.companyName())
                         .extend({
                             minLength:4
                     });
@@ -63,22 +63,21 @@ define(function (require) {
                         .extend({
                             maxLength: 150
                     });
-                }
-                self.studentOrStartupName.subscribe(function (newValue) { app.trigger('information:name-changed', newValue); });
-                self.studentOrStartupName.valueHasMutated();
-                
-                self.dataModel = ko.validatedObservable({
-
-                    phoneNumber: ko.observable(self.model.phoneNumber())
+                    self.phoneNumber = ko.validatedObservable(self.model.phoneNumber())
                         .extend({
                             minLength:10
-                    }),
-                    emailAddress: ko.observable(self.model.emailAddress())
+                    });
+                }
+                
+                self.emailAddress = ko.validatedObservable(self.model.emailAddress())
                         .extend({
                             email: true,
                             minLength: 4
-                    })
                 });
+                
+                self.studentOrStartupName.subscribe(function (newValue) { app.trigger('information:name-changed', newValue); });
+                self.studentOrStartupName.valueHasMutated();
+                
             });
         };
         

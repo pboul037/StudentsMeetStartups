@@ -1,0 +1,73 @@
+<section>
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>Meetups</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="panel panel-success">
+                    <div class="panel-heading">
+                        <div class = "row">
+                            <div class="col-sm-12">
+                            </div>
+                            <div class="col-sm-2">
+                                <h5>Upcoming</h5>
+                            </div>
+                            <div class="col-offset-sm-6 col-sm-3">
+                                <button class="btn btn-sm btn-success btn-block" type="submit" 
+                                    data-bind="click: createNewMeetup, visible: isStartup">Create a Meetup</button>
+                            </div>                     
+                        </div>
+                    </div>
+                    <table class="table table-hover">
+                        <!-- ko if: (isStartup() && (myMeetupsStartup.length != 0))-->
+                        <thead>
+                            <tr>
+                                <th>When</th>
+                                <th>Where</th>
+                                <th>Max Participants</th>
+                                <th>Duration</th>
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: myMeetupsStartup">
+                                <tr>
+                                    <td data-bind="text: startTime"></td>
+                                    <td data-bind="text: location"></td>
+                                    <td data-bind="text: numMaxParticipants"></td>
+                                    <td>1h</td>
+                                </tr>
+                        </tbody>
+                        <!-- /ko -->
+                        <!-- ko if: (isStartup() && (myMeetupsStartup().length == 0))-->
+                        <p class="text-center">You have no scheduled meetups.</p>
+                        <!-- /ko -->
+                        <!-- ko if: (isStudent() && (myMeetupsStudent().length != 0)) -->
+                        <thead>
+                            <tr>
+                                <th>When</th>
+                                <th>Where</th>
+                                <th>Duration</th>
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: myMeetupsStudent">
+                                <tr>
+                                    <td data-bind="text: startTime"></td>
+                                    <td data-bind="text: location"></td>
+                                    <td>1h</td>
+                                </tr>
+                        </tbody>
+                        
+                        <!-- /ko -->
+                        <!-- ko if: (isStudent() && (myMeetupsStudent().length == 0))-->
+                        <p class="text-center">You have no scheduled meetups.</p>
+                        <!-- /ko -->
+                    </table>  
+                </div>
+            </div>
+            <button class="btn btn-lg btn-primary btn-block" type="submit" data-bind="click: browse, visible: isStartup">Browse Students</button>
+            <button class="btn btn-lg btn-primary btn-block" type="submit" data-bind="click: browse, visible: isStudent">Browse Startups</button>
+        </div>
+    </div>
+</section>

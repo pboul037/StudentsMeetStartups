@@ -114,7 +114,7 @@ define(function (require) {
             ko.mapping.toJS(self.model).save()
             .then(session.login.bind(session, self.credentials().username(),self.credentials().password()))
             .fail(showError)
-            .done(funtciont(){
+            .done(function(){
                   toastr.success('Thank you for registering!');
                   dialog.close(this)
             }); 

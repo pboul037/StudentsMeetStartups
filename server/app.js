@@ -173,6 +173,10 @@ app.post("/meetup", function (request, response) {
     response.put("meetup", Meetup.create.bind(Meetup, request.body.meetup));
 });
 
+app.get('/meetups', function (request, response) {
+    response.put("meetups", Meetup.find.bind(Meetup));
+});
+
 app.post("/meetup/participant", function (request, response) {
     async.waterfall([
         async.series.bind(async, [

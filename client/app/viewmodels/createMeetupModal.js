@@ -58,6 +58,7 @@ define(function (require) {
             self.meetupData.startupId = self.meetup().startupId();
             self.meetupData.startTime = self.meetup().startTime();
             self.meetupData.endTime = self.meetup().endTime();
+            self.meetupData.location = self.meetup().location();
             self.meetupData.numMaxParticipants = self.meetup().numMaxParticipants();
             
             self.meetupData.save()
