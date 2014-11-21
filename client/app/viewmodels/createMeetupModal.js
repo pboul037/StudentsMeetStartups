@@ -2,11 +2,26 @@ define(function (require) {
     var dialog = require('plugins/dialog'),
         ko = require('knockout'),
         Meetup = require('models/meetup'),
-        session = require('session');
+        session = require('session'),
+        toastr = require('toastr')
 
     ko.mapping = require('knockout.mapping');
     ko.validation = require('knockout.validation');
-    
+    toastr.options = {
+      "closeButton": false,
+      "debug": false,
+      "progressBar": false,
+      "positionClass": "toast-bottom-full-width",
+      "onclick": null,
+      "showDuration": "750",
+      "hideDuration": "750",
+      "timeOut": "750",
+      "extendedTimeOut": "1000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+    }
     function CreateMeetupModal()
     {
         var self = this;
@@ -48,7 +63,9 @@ define(function (require) {
             self.meetupData.save()
             .fail(self.showError)
             .then(self.close)
-            .done(); 
+            .done(function(){
+                 toastr.success('Meetup created!');
+            }); 
         };
 
         self.close = function () {

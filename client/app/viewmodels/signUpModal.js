@@ -5,10 +5,26 @@ define(function (require) {
         dialog = require('plugins/dialog'),
         Student = require('models/student'),
         Startup = require('models/startup'),
-        session = require('session');
+        session = require('session'),
+        toastr = require('toastr')
 
     ko.mapping = require('knockout.mapping');
     ko.validation = require('knockout.validation');
+    toastr.options = {
+      "closeButton": false,
+      "debug": false,
+      "progressBar": false,
+      "positionClass": "toast-bottom-full-width",
+      "onclick": null,
+      "showDuration": "750",
+      "hideDuration": "750",
+      "timeOut": "1000",
+      "extendedTimeOut": "1000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+    }
     
     function SignUpModal()
     {       
@@ -98,7 +114,10 @@ define(function (require) {
             ko.mapping.toJS(self.model).save()
             .then(session.login.bind(session, self.credentials().username(),self.credentials().password()))
             .fail(showError)
-            .done(dialog.close(this)); 
+            .done(funtciont(){
+                  toastr.success('Thank you for registering!');
+                  dialog.close(this)
+            }); 
         };       
     }
 

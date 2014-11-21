@@ -2,17 +2,19 @@
     <div class=container-fluid>
         <div class="row">
             <div class="col-sm-offset-11 col-sm-1">
-                <button class="btn btn-sm btn-danger btn-block" type="submit" data-bind="click: logout">Log out</button>
+                <button class="btn btn-sm btn-default btn-block" type="submit" data-bind="click: logout">Log out</button>
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-offset-5 col-sm=7">
-                <!-- ko if: information.isStudent -->
-                <h1>Hello, <!--ko text:name--><!--/ko--></h1>
-                <!-- /ko -->
-                <!-- ko if: information.isStartup -->
-                <h1>Welcome, <!--ko text:name--><!--/ko--></h1>
-                <!-- /ko -->
+          <div class="col-md-12">
+              <div class="well well-sm text-center">
+                    <!-- ko if: information.isStudent -->
+                    <h2>Hello, <!--ko text:name--><!--/ko--></h1>
+                    <!-- /ko -->
+                    <!-- ko if: information.isStartup -->
+                    <h2>Welcome, <!--ko text:name--><!--/ko--></h1>
+                    <!-- /ko -->
+              </div>
             </div>
         </div>
         <div class="row">
