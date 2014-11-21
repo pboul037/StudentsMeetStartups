@@ -1,6 +1,5 @@
 define(function (require) {
     var app = require('durandal/app'),
-        http = require('plugins/http'),
         ko = require('knockout'),
         Student = require('models/student'),
         Startup = require('models/startup'),
@@ -17,86 +16,53 @@ define(function (require) {
         self.resume = null;
         self.transcript = null;
 
+        self.isStartup = ko.observable();
+        self.isStudent = ko.observable();
+
         self.activate = function () {
-            
             return session.getUser().done(function (user) {
                 self.model = ko.mapping.fromJS(user);
-                self.isStartup = ko.observable(session.connectedAsStartup());
-                self.isStudent = ko.observable(session.connectedAsStudent());
+
+                self.isStartup(session.connectedAsStartup());
+                self.isStudent(session.connectedAsStudent());
                 
                 if (self.isStartup())
                 {
-                    self.studentOrStartupName = ko.validatedObservable(self.model.companyName())
-                        .extend({
-                            minLength:4
-                    });
-                    
-                    self.studentOrStartupDescription = ko.validatedObservable(self.model.description())
-                        .extend({
-                            maxLength: 150
-                    });
-                    self.postalAddress = ko.validatedObservable(self.model.postalAddress())
-                        .extend({
-                            minLength: 4
-                    });
+                    self.model.companyName.extend({ minLength: 4 });
+                    self.model.companyName.subscribe(self.nameChanged);
+                    self.model.companyName.valueHasMutated();
+                    self.model.description.extend({ maxLength: 150 });
+                    self.model.postalAddress.extend({ minLength: 4 });
                 }
                 else if (self.isStudent())
                 {
-                    self.studentOrStartupName = ko.validatedObservable(self.model.name())
-                        .extend({
-                            minLength:4
-                    });
-                    
-                    self.studentOrStartupDescription = ko.validatedObservable(self.model.selfDescription())
-                        .extend({
-                            maxLength: 150
-                    });
-                    self.phoneNumber = ko.validatedObservable(self.model.phoneNumber())
-                        .extend({
-                            minLength:10
-                    });
+                    self.model.name.extend({ minLength: 4 });
+                    self.model.name.subscribe(self.nameChanged);
+                    self.model.name.valueHasMutated();
+                    self.model.selfDescription.extend({ maxLength: 150 });
+                    self.model.phoneNumber.extend({ minLength: 10 });
                 }
                 
-                self.emailAddress = ko.validatedObservable(self.model.emailAddress())
-                        .extend({
-                            email: true,
-                            minLength: 4
-                });
-                
-                self.studentOrStartupName.subscribe(function (newValue) { app.trigger('information:name-changed', newValue); });
-                self.studentOrStartupName.valueHasMutated();
+                self.model.emailAddress.extend({ email: true, minLength: 4 });
             });
         };
         
-        self.attached = function (view, parent) {
-            self.inputResume = $('#inputResume');
-            self.inputTranscript = $('#inputTranscript');
-
-            self.inputResume.on('change', function (event) {
+        self.nameChanged = function (newValue) {
+            app.trigger('information:name-changed', newValue);
+        };
+        
+        self.attached = function () {
+            $('#inputResume').on('change', function (event) {
                 self.resume = event.target.files;
             });
 
-            self.inputTranscript.on('change', function (event) {
+            $('#inputTranscript').on('change', function (event) {
                 self.transcript = event.target.files;
             });
         };
 
         self.save = function () {
-            
-            var modelToSave = ko.mapping.toJS(self.model);
-            modelToSave.phoneNumber = self.phoneNumber();
-            modelToSave.emailAddress = self.emailAddress();
-            
-            if( self.isStudent()){
-                modelToSave.name = self.studentOrStartupName();
-                modelToSave.selfDescription = self.studentOrStartupDescription();
-            }else if (self.isStartup()){
-                modelToSave.companyName = self.studentOrStartupName();
-                modelToSave.description = self.studentOrStartupDescription();
-                modelToSave.postalAddress = self.postalAddress();
-            }
-            
-            var save = modelToSave.save();
+            var save = ko.mapping.toJS(self.model).save();
             
             if (self.isStudent())
             {   
