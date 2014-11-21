@@ -140,8 +140,10 @@ app.put("/student/:id", function (request, response) {
         Student.get.bind(Student, request.params.id),
         function (student, callback) {
             _.extend(student, request.body.student);
-            _.omit(student, "transcript", "resume", "id", "accountId");
             student.save(callback);
+        },
+        function (student, callback) {
+            callback(null, _.omit(student, "transcript", "resume", "accountId"));
         }
     ], response.handle("student"));
 });
