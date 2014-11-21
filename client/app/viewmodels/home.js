@@ -28,6 +28,11 @@ define(function (require) {
         self.showError = function (error) {
             self.errorMessage(error.responseText);
         };
+
+        self.activate = function () {
+            if (session.connectedAsStartup() || session.connectedAsStudent())
+                router.navigate('dashboard');
+        };
     }
 
     return new HomeViewModel;

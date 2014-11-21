@@ -32,7 +32,7 @@ define(function (require) {
             });
         };
 
-        self.logout = function () {
+        self.logout = function (redirect) {
             $.removeCookie('connect.sid');
             $.removeCookie('connect.studentId');
             $.removeCookie('connect.startupId');
