@@ -175,8 +175,33 @@ app.post("/meetup", function (request, response) {
     response.put("meetup", Meetup.create.bind(Meetup, request.body.meetup));
 });
 
-app.get('/meetups', function (request, response) {
-    response.put("meetups", Meetup.find.bind(Meetup));
+app.get("/meetups", function (request, response) {
+    if (_.has(request.query, "startupId"))
+    {
+        async.waterfall([
+            Startup.get.bind(Startup, request.query.startupId),
+            function (startup, callback) {
+                if (_.has(request.query, "upcoming"))
+                    startup.getUpcomingMeetups(callback);
+                else
+                    startup.getMeetups(callback);
+            }
+        ], response.handle("meetups"));
+    }
+    else if (_.has(request.query, "studentId"))
+    {
+        async.waterfall([
+            Student.get.bind(Student, request.query.studentId),
+            function (student, callback) {
+                if (_.has(request.query, "upcoming"))
+                    student.getUpcomingMeetups(callback);
+                else
+                    student.getMeetups(callback);
+            }
+        ], response.handle("meetups"));
+    }
+    else
+        response.put("meetups", Meetup.find.bind(Meetup));
 });
 
 app.post("/meetup/participant", function (request, response) {

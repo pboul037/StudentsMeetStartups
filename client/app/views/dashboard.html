@@ -1,12 +1,7 @@
 <section>
     <div class=container-fluid>
         <div class="row">
-            <div class="col-sm-offset-11 col-sm-1">
-                <button class="btn btn-sm btn-default btn-block" type="submit" data-bind="click: logout">Log out</button>
-            </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12">
+          <div class="col-md-11">
               <div class="well well-sm text-center">
                     <!-- ko if: information.isStudent -->
                     <h2>Hello, <!--ko text:name--><!--/ko--></h1>
@@ -15,6 +10,9 @@
                     <h2>Welcome, <!--ko text:name--><!--/ko--></h1>
                     <!-- /ko -->
               </div>
+            </div>
+            <div class="col-md-1">
+                <button class="btn btn-sm btn-primary btn-block" type="submit" data-bind="click: logout">Log out</button>
             </div>
         </div>
         <div class="row">

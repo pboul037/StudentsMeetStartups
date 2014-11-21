@@ -1,7 +1,6 @@
 
 define(function (require) {
     var http = require('plugins/http');
-
     var apiUrl = 'http://192.168.56.101/student';
 
     function Student()

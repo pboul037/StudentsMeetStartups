@@ -1,4 +1,7 @@
 
+var orm = require("orm"),
+    moment = require("moment");
+
 module.exports = function (db, cb) {
     var Student = db.define("student", {
         name:            { type: "text", size: 100 },
@@ -8,7 +11,12 @@ module.exports = function (db, cb) {
         resume:          { type: "binary" },
         transcript:      { type: "binary" }
     }, {
-        collection: "students" /* Real table name */    
+        collection: "students", /* Real table name */    
+        methods: {
+            getUpcomingMeetups: function (callback) {
+                this.getMeetups({ "startTime": orm.gt(moment().format("YYYY-MM-DD HH:MM:SS")) }, callback); 
+            }
+        }
     });
 
     return cb();

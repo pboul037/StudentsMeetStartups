@@ -1,4 +1,7 @@
 
+var orm = require("orm"),
+    moment = require("moment");
+
 module.exports = function (db, cb) {
     var Startup = db.define("startup", {
         companyName:  { type: "text", mapsTo: "company_name" },
@@ -7,7 +10,12 @@ module.exports = function (db, cb) {
         postalAddress:  { type: "text" },
         websiteUrl:   { type: "text", mapsTo: "website_url" }
     }, {
-        collection: "startups" /* Real table name */  
+        collection: "startups", /* Real table name */  
+        methods: {
+            getUpcomingMeetups: function (callback) {
+                Meetup.find({ "startupId": this.id, "startTime": orm.gt(moment().format("YYYY-MM-DD HH:MM:SS")) }, callback); 
+            }
+        }
     });
 
     return cb();

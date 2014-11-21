@@ -3,8 +3,9 @@ define(function (require) {
     var router = require('plugins/router'),
         ko = require('knockout'),
         session = require('session'),
+        Meetup = require('models/meetup'),
         CreateMeetupModal = require('viewmodels/createMeetupModal'),
-        http = require('plugins/http')
+        http = require('plugins/http');
 
     function MeetupsViewModel()
     {
@@ -19,30 +20,26 @@ define(function (require) {
         };
 
         self.writeReview = function () {
-            //TODO: TBA, form GUI is done but missing validation and main logic.
+            /* TODO: TBA, form GUI is done but missing validation and main logic. */
         };
         
         self.meetups = ko.observableArray([]);
+        self.isStartup = ko.observable();
+        self.isStudent = ko.observable();
 
-        self.isStartup = ko.observable(session.connectedAsStartup());
-        self.isStudent = ko.observable(session.connectedAsStudent());
-        self.myMeetupsStartup = ko.observableArray([]);
-        self.myMeetupsStudent = ko.observableArray([]);
-        
         self.activate = function () {
-            return http.get('http://192.168.56.101/meetups').done(function(response) {
-                  self.meetups(response.meetups);
-          }).done(function(){
-                ko.utils.arrayForEach(self.meetups(), function(meetup) {
-                    if( session.connectedAsStartup()){
-                        if( meetup.startupId == session.startupId ){
-                            self.myMeetupsStartup.push(meetup);
-                        }
-                    }else if( session.connectedAsStudent()){
-                        // Push all this student's myMeetups onto its ucoming meetups list
-                    }
-                });
-            }); 
+            self.isStartup(session.connectedAsStartup());
+            self.isStudent(session.connectedAsStudent());
+
+            if (self.isStartup())
+                var findMeetups = Meetup.findByStartup(session.startupId);
+            else if (self.isStudent())
+                var findMeetups = Meetup.findByStudent(session.studentId);
+
+            findMeetups.then(function (meetups) {
+                self.meetups(meetups);
+                self.meetups.valueHasMutated();
+            }).done();
         };
     }
     

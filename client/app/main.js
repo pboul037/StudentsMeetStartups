@@ -13,7 +13,8 @@ requirejs.config({
         'models': './models',
         'session': './lib/session',
         'notify': './lib/notify',
-        'toastr': '../lib/toastr/toastr.min'
+        'toastr': '../lib/toastr/toastr.min',
+        'moment': '../lib/moment/moment.min'
     },
     shim: {
         'jquery.cookie': {

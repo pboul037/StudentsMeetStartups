@@ -21,8 +21,10 @@
                             </div>                     
                         </div>
                     </div>
-                    <table class="table table-hover">
-                        <!-- ko if: (isStartup() && (myMeetupsStartup.length != 0))-->
+
+                    <!-- ko if: isStartup -->
+                    <p class="text-center" data-bind="visible: meetups().length == 0">You have no scheduled meetups.</p>
+                    <table class="table table-hover" data-bind="visible: meetups().length > 0">
                         <thead>
                             <tr>
                                 <th>When</th>
@@ -31,19 +33,20 @@
                                 <th>Duration</th>
                             </tr>
                         </thead>
-                        <tbody data-bind="foreach: myMeetupsStartup">
+                        <tbody data-bind="foreach: meetups">
                                 <tr>
-                                    <td data-bind="text: startTime"></td>
+                                    <td data-bind="text: formatStartTime()"></td>
                                     <td data-bind="text: location"></td>
                                     <td data-bind="text: numMaxParticipants"></td>
-                                    <td>1h</td>
+                                    <td data-bind="text: getDuration('hh:mm')"></td>
                                 </tr>
                         </tbody>
-                        <!-- /ko -->
-                        <!-- ko if: (isStartup() && (myMeetupsStartup().length == 0))-->
-                        <p class="text-center">You have no scheduled meetups.</p>
-                        <!-- /ko -->
-                        <!-- ko if: (isStudent() && (myMeetupsStudent().length != 0)) -->
+                    </table>
+                    <!-- /ko -->
+
+                    <!-- ko if: isStudent -->
+                    <p class="text-center" data-bind="visible: meetups().length == 0">You have no scheduled meetups.</p>
+                    <table class="table table-hover" data-bind="visible: meetups().length > 0">
                         <thead>
                             <tr>
                                 <th>When</th>
@@ -51,23 +54,23 @@
                                 <th>Duration</th>
                             </tr>
                         </thead>
-                        <tbody data-bind="foreach: myMeetupsStudent">
+                        <tbody data-bind="foreach: meetups">
                                 <tr>
-                                    <td data-bind="text: startTime"></td>
+                                    <td data-bind="text: formatStartTime()"></td>
                                     <td data-bind="text: location"></td>
-                                    <td>1h</td>
+                                    <td data-bind="text: getDuration('hh:mm')"></td>
                                 </tr>
                         </tbody>
-                        
-                        <!-- /ko -->
-                        <!-- ko if: (isStudent() && (myMeetupsStudent().length == 0))-->
-                        <p class="text-center">You have no scheduled meetups.</p>
-                        <!-- /ko -->
                     </table>  
+                    <!-- /ko -->
                 </div>
             </div>
-            <button class="btn btn-lg btn-primary btn-block" type="submit" data-bind="click: browse, visible: isStartup">Browse Students</button>
-            <button class="btn btn-lg btn-primary btn-block" type="submit" data-bind="click: browse, visible: isStudent">Browse Startups</button>
+            <!-- ko if: isStartup -->
+            <button class="btn btn-lg btn-primary btn-block" type="submit" data-bind="click: browse">Browse Students</button>
+            <!-- /ko -->
+            <!-- ko if: isStudent -->
+            <button class="btn btn-lg btn-primary btn-block" type="submit" data-bind="click: browse">Browse Startups</button>
+            <!-- /ko -->
         </div>
     </div>
 </section>
