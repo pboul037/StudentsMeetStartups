@@ -11,7 +11,6 @@ define(function (require) {
         this.emailAddress = '';
         this.description = '';
         this.postalAddress = '';
-        this.meetups = [];
     }
 
     Startup.get = function (id) {
@@ -26,6 +25,9 @@ define(function (require) {
 
             $.each(startups, function (key, startup) {
                 startups[key] = $.extend(new Startup, startup);
+
+                if (!startups[key].hasOwnProperty('meetups'))
+                    startups[key].meetups = [];
 
                 $.each(startups[key].meetups, function (meetupkey, meetup) {
                     startups[key].meetups[meetupkey] = $.extend(new Meetup, meetup);

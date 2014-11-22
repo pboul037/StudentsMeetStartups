@@ -23,10 +23,13 @@ define(function (require) {
         
             return http.post(url, credentials)
             .then(function (response) {
-                if (response.student)
+                if (response.hasOwnProperty('student'))
                     self.studentId = response.student.id;            
-                else if (response.startup)
+                else if (response.hasOwnProperty('startup'))
+            {
+                console.log('should create cookie!');
                     self.startupId = response.startup.id;            
+            }
 
                 redirectToDashboard();
             });

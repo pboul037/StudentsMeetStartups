@@ -1,3 +1,8 @@
+/*
+ * @TODO Holy shit this file is butt ugly. Needs a major cleanup. KO mapping should be used instead of
+ * an observable for model. See InformationViewModel.
+ */
+
 define(function (require) {
     var http = require('plugins/http'),
         router = require('plugins/router'),
@@ -92,16 +97,26 @@ define(function (require) {
         };
         
         self.signup = function (self) {
-            self.model().name = self.name();
-            self.model().username = self.credentials().username();
-            self.model().password = self.credentials().password();
-            self.model().companyName = self.companyName();
-            ko.mapping.toJS(self.model).save()
+            if (self.isStudentAccount())
+            {
+                var modelToSave = new Student();
+                modelToSave.name = self.name();
+            }
+            else if (self.isStartupAccount())
+            {
+                var modelToSave = new Startup();
+                modelToSave.companyName = self.companyName();
+            }
+
+            modelToSave.username = self.credentials().username();
+            modelToSave.password = self.credentials().password();
+
+            modelToSave.save()
             .then(session.login.bind(session, self.credentials().username(),self.credentials().password()))
             .fail(showError)
             .done(function(){
                   notify.success('Thank you for registering!');
-                  dialog.close(this)
+                  dialog.close(self);
             }); 
         };       
     }
