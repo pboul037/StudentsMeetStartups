@@ -1,35 +1,63 @@
 define(function (require) {
     var app = require('durandal/app'),
         ko = require('knockout'),
-        http = require('plugins/http'),
         Student = require('models/student'),
-        session = require('session');
+        Startup = require('models/startup'),
+        Meetup = require('models/meetup'),
+        session = require('session'),
+        notify = require('notify');
 
-    return {
-        logout : function () {
+    function ExploreViewModel()
+    {
+        var self = this;
+
+        self.logout = function () {
             session.logout();
-        },
-        students: ko.observableArray([]),
-        startups: ko.observableArray([]),
-        activate: function () {
+        };
+        
+        self.students = ko.observableArray([]);
+        self.startups = ko.observableArray([]);
             
-            var self = this;
-            
-            self.isStartup = ko.observable(session.connectedAsStartup());
-            self.isStudent = ko.observable(session.connectedAsStudent());
+        self.isStartup = ko.observable();
+        self.isStudent = ko.observable();
+
+        self.activate = function () {
+            self.isStartup(session.connectedAsStartup());
+            self.isStudent(session.connectedAsStudent());
             
             if (self.isStartup())
-                {
-                    return http.get('http://192.168.56.101/students').then(function(response) {
-                        self.students(response.students);
-                    });
-                }
+                return Student.findAll().then(self.students);
             else if (self.isStudent())
-                {
-                    return http.get('http://192.168.56.101/startups').then(function(response) {
-                        self.startups(response.startups);
+                return Startup.findAll().then(self.saveStartups);
+        };
+
+        self.saveStartups = function (startups) {
+            Meetup.findByStudent(session.studentId).then(function (registeredMeetups) {
+                $.each(registeredMeetups, function (key, meetup) {
+                    registeredMeetups[key] = meetup.id;
+                });
+
+                $.each(startups, function (startupKey, startup) {
+                    $.each(startup.meetups, function (meetupKey, meetup) {
+                        startups[startupKey].meetups[meetupKey].registered = ko.observable((registeredMeetups.indexOf(meetup.id) > -1));
                     });
-                }
-        }
-    };
+                });
+
+                self.startups(startups);
+            });
+        };
+
+        self.enroll = function (meetup) {
+            if (!meetup.registered())
+            {
+                meetup.addParticipant(session.studentId).then(function() {
+                    notify.success('Succesfully registered to the meetup!'); 
+                });
+                meetup.registered(true);
+            }
+        };
+    }
+
+    return new ExploreViewModel;
 });
+

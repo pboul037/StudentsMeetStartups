@@ -36,10 +36,7 @@ define(function (require) {
             else if (self.isStudent())
                 var findMeetups = Meetup.findByStudent(session.studentId);
 
-            findMeetups.then(function (meetups) {
-                self.meetups(meetups);
-                self.meetups.valueHasMutated();
-            }).done();
+            findMeetups.then(self.meetups);
         };
     }
     

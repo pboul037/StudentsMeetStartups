@@ -20,8 +20,16 @@ define(function (require) {
         });
     };
     
-    Student.getAll = function () {
-        return http.get(apiUrl + 's');
+    Student.findAll = function () {
+        return http.get(apiUrl + 's').then(function (response) {
+            var students = response.students;
+
+            $.each(students, function (key, student) {
+                students[key] = $.extend(new Student, student);
+            });
+
+            return students;
+        });
     };
 
     Student.prototype.save = function () {

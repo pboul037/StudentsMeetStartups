@@ -6,12 +6,14 @@
  */
 
 var express = require("express"),
+    orm = require("orm"),
     fs = require("fs"),
     multipart = require("connect-multiparty"),
     session = require("express-session"),
     bodyParser = require("body-parser"),
     async = require("async"),
     _ = require("lodash"),
+    moment = require("moment"),
     passport = require("passport"),
     database = require("./lib/database"),
     authentication = require("./lib/authentication"),
@@ -56,15 +58,51 @@ app.post("/login", passport.authenticate("local"), function (request, response) 
     });
 });
 
-app.get('/startups', function (request, response) {
-    response.put("startups", Startup.find.bind(Startup));
+app.get("/startups", function (request, response) {
+    var tasks = [Startup.find.bind(Startup)];
+
+    if (_.has(request.query, "joinMeetups") || _.has(request.query, "joinUpcomingMeetups"))
+    {
+        tasks.push(function (fetchedStartups, callback) {
+            var startups = [];
+            var startupIndex = {};
+
+            _.each(fetchedStartups, function (startup, key) {
+                startupIndex[startup.id] = key;
+                startups[key] = _.clone(startup);
+            });
+
+            var conditions = { "startupId": _.keys(startupIndex) };
+
+            if (_.has(request.query, "joinUpcomingMeetups"))
+                conditions.startTime = orm.gt(moment().format("YYYY-MM-DD HH:MM:SS"));
+
+            Meetup.find(conditions, function (error, meetups) {
+                if (error)
+                    callback(error);
+                else
+                {
+                    _.each(meetups, function (meetup, key) {
+                        if (!_.has(startups[startupIndex[meetup.startupId]], "meetups"))
+                            startups[startupIndex[meetup.startupId]].meetups = [];
+                            
+                        startups[startupIndex[meetup.startupId]].meetups.push(_.clone(meetup));
+                    });
+
+                    callback(null, startups);
+                }
+            });
+        });
+    }
+
+    async.waterfall(tasks, response.handle("startups"));
 });
 
-app.get('/startup/:id', function (request, response) {
+app.get("/startup/:id", function (request, response) {
     response.put("startup", Startup.get.bind(Startup, request.params.id));
 });
 
-app.post('/startup', function (request, response) {
+app.post("/startup", function (request, response) {
     var startup = _.omit(request.body.startup, "username", "password");
     var userAccount = _.pick(request.body.startup, "username", "password");
 
@@ -95,7 +133,7 @@ app.post('/startup', function (request, response) {
     }
 });
 
-app.put('/startup/:id', function (request, response) {
+app.put("/startup/:id", function (request, response) {
     async.waterfall([
         Startup.get.bind(Startup, request.params.id),
         function (startup, callback) {
@@ -105,11 +143,11 @@ app.put('/startup/:id', function (request, response) {
     ], response.handle("startup"));
 });
 
-app.get('/students', function (request, response) {
+app.get("/students", function (request, response) {
     response.put("students", Student.find.bind(Student));
 });
 
-app.get('/student/:id', function (request, response) {
+app.get("/student/:id", function (request, response) {
     async.waterfall([
         Student.get.bind(Student, request.params.id),
         function (student, callback) {
@@ -118,7 +156,7 @@ app.get('/student/:id', function (request, response) {
     ], response.handle("student"));
 });
 
-app.post('/student', function (request, response) {
+app.post("/student", function (request, response) {
     var student = _.omit(request.body.student, "username", "password");
     var userAccount = _.pick(request.body.student, "username", "password");
 

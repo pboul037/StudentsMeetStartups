@@ -23,7 +23,6 @@ define(function (require) {
                 meetups[key] = $.extend(new Meetup, meetup);
             });
 
-
             return meetups;
         });
     };
@@ -45,6 +44,10 @@ define(function (require) {
             return http.post(apiUrl, { 'meetup': this });
         else
             return http.put(apiUrl, { 'meetup': this });
+    };
+
+    Meetup.prototype.addParticipant = function (studentId) {
+        return http.post(apiUrl + "/participant", { "meetupId": this.id, "studentId": studentId });
     };
     
     Meetup.prototype.getDuration = function (format) {
