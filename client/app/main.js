@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2014, Patrice Boulet & Nicholas Gagnon
+ * All rights reserved.
+ */
 
 requirejs.config({
     paths: {

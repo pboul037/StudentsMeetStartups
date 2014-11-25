@@ -1,4 +1,9 @@
 /*
+ * Copyright (c) 2014, Patrice Boulet & Nicholas Gagnon
+ * All rights reserved.
+ */
+
+/*
  * @TODO Holy shit this file is butt ugly. Needs a major cleanup. KO mapping should be used instead of
  * an observable for model. See InformationViewModel.
  */

@@ -1,7 +1,10 @@
+/*
+ * Copyright (c) 2014, Patrice Boulet & Nicholas Gagnon
+ * All rights reserved.
+ */
 
 define(function (require) {
     var http = require('plugins/http');
-    var apiUrl = 'http://192.168.56.101/student';
 
     function Student()
     {
@@ -15,13 +18,13 @@ define(function (require) {
     }
 
     Student.get = function (id) {
-        return http.get(apiUrl + '/' + id).then(function (response) {
+        return http.get('/student/' + id).then(function (response) {
             return $.extend(new Student, response.student); 
         });
     };
     
     Student.findAll = function () {
-        return http.get(apiUrl + 's').then(function (response) {
+        return http.get('/students').then(function (response) {
             var students = response.students;
 
             $.each(students, function (key, student) {
@@ -34,9 +37,9 @@ define(function (require) {
 
     Student.prototype.save = function () {
         if (this.id == null)
-            return http.post(apiUrl, { 'student': this });
+            return http.post('/student', { 'student': this });
         else
-            return http.put(apiUrl + '/' + this.id, { 'student': this });
+            return http.put('/student/' + this.id, { 'student': this });
     };
     
     return Student;

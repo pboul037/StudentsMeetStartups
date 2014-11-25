@@ -1,8 +1,11 @@
+/*
+ * Copyright (c) 2014, Patrice Boulet & Nicholas Gagnon
+ * All rights reserved.
+ */
 
 define(function (require) {
     var http = require('plugins/http'),
         Meetup = require('models/meetup');
-    var apiUrl = 'http://192.168.56.101/startup';
 
     function Startup()
     {
@@ -14,13 +17,13 @@ define(function (require) {
     }
 
     Startup.get = function (id) {
-        return http.get(apiUrl + '/' + id).then(function (response) {
+        return http.get('/startup/' + id).then(function (response) {
             return $.extend(new Startup, response.startup); 
         });
     };
 
     Startup.findAll = function () {
-        return http.get(apiUrl + 's', { 'joinUpcomingMeetups': 'true' }).then(function (response) {
+        return http.get('/startups', { 'joinUpcomingMeetups': 'true' }).then(function (response) {
             var startups = response.startups;
 
             $.each(startups, function (key, startup) {
@@ -40,9 +43,9 @@ define(function (require) {
 
     Startup.prototype.save = function () {
         if (this.id == null)
-            return http.post(apiUrl, { 'startup': this });
+            return http.post('/startup', { 'startup': this });
         else
-            return http.put(apiUrl + '/' + this.id, { 'startup': this });
+            return http.put('/startup/' + this.id, { 'startup': this });
     };
 
     return Startup;

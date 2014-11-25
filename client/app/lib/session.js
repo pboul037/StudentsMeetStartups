@@ -19,7 +19,7 @@ define(function (require) {
 
         self.login = function (username, password) {
             var credentials = { 'username': username, 'password': password };
-            var url = 'http://192.168.56.101/login';
+            var url = '/login';
         
             return http.post(url, credentials)
             .then(function (response) {

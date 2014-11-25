@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2014, Patrice Boulet & Nicholas Gagnon
+ * All rights reserved.
+ */
+
 define(function (require) {
     var app = require('durandal/app'),
         ko = require('knockout'),

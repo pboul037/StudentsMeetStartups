@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2014, Patrice Boulet & Nicholas Gagnon
+ * All rights reserved.
+ */
+
 define(function (require) {
     var app = require('durandal/app'),
         ko = require('knockout'),
@@ -93,7 +98,7 @@ define(function (require) {
             });
 
             return $.ajax({
-                url: 'http://192.168.56.101/student/' + self.model.id() + '/' + name,
+                url: '/student/' + self.model.id() + '/' + name,
                 type: 'PUT',
                 data: data,
                 cache: false,

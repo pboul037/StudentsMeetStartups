@@ -7,7 +7,8 @@
 
 var superagent = require("superagent"),
     expect = require("expect.js"),
-    _ = require("lodash");
+    _ = require("lodash"),
+    Q = require("q");
 
 describe("StudentsMeetStartup REST API", function () {
     var startupId, studentId, meetupId;
@@ -63,6 +64,14 @@ describe("StudentsMeetStartup REST API", function () {
         location: "Gloucester"
     };
 
+    var startupCreated = Q.defer();
+    var startupUpdated = Q.defer();
+    
+    var studentCreated = Q.defer();
+    var studentUpdated = Q.defer();
+    
+    var meetupCreated = Q.defer();
+
     it("can create a startup", function (done) {
         http.post("/startup", { "startup": startup }).test(function (response) {
             expect(response).to.have.property("startup");
@@ -76,34 +85,43 @@ describe("StudentsMeetStartup REST API", function () {
 
             expect(response.startup).to.eql(startup);
 
+            startupCreated.resolve();
             done();
         });
     });
     
+    it("can update a startup", function (done) {
+        Q.when(startupCreated, function () {
+            http.put("/startup/" + startupId, {"startup": _.extend(startup, updatedStartup)}).test(function (response) {
+                expect(response).to.have.property("startup");
+                expect(response.startup).to.eql(_.extend(startup, updatedStartup));
+
+                startupUpdated.resolve();
+                done();
+            });
+        });
+    });
+
     it("can find a statup", function (done) {
-        http.get("/startup/" + startupId).test(function (response) {
-            expect(response).to.have.property("startup");
-            expect(response.startup).to.eql(startup);
-            done();
+        Q.all([startupCreated, startupUpdated]).then(function () {
+            http.get("/startup/" + startupId).test(function (response) {
+                expect(response).to.have.property("startup");
+                expect(response.startup).to.eql(_.extend(startup, updatedStartup));
+                done();
+            });
         });
     });
     
     it("can login as a startup", function (done) {
-        http.post("/login", startupCredentials).test(function (response, headers) {
-            expect(response).to.have.property("startup");
-            expect(response.startup).to.eql(startup);
-            expect(headers).to.have.key("set-cookie");
-            expect(headers["set-cookie"][0]).to.match(/^connect\.sid/);
+        Q.all([startupCreated, startupUpdated]).then(function () {
+            http.post("/login", startupCredentials).test(function (response, headers) {
+                expect(response).to.have.property("startup");
+                expect(response.startup).to.eql(_.extend(startup, updatedStartup));
+                expect(headers).to.have.key("set-cookie");
+                expect(headers["set-cookie"][0]).to.match(/^connect\.sid/);
 
-            done();
-        });
-    });
-
-    it("can update a startup", function (done) {
-        http.put("/startup/" + startupId, {"startup": updatedStartup}).test(function (response) {
-            expect(response).to.have.property("startup");
-            expect(response.startup).to.eql(_.extend(startup, updatedStartup));
-            done();
+                done();
+            });
         });
     });
 
@@ -124,55 +142,70 @@ describe("StudentsMeetStartup REST API", function () {
             
             expect(response.student).to.eql(student);
 
-            done();
-        });
-    });
-    
-    it("can find a student", function (done) {
-        http.get("/student/" + studentId).test(function (response) {
-            expect(response).to.have.property("student");
-            expect(response.student).to.eql(student);
-            done();
-        });
-    });
-    
-    it("can login as a student", function (done) {
-        http.post("/login", studentCredentials).test(function (response, headers) {
-            expect(response).to.have.property("student");
-            expect(response.student).to.eql(student);
-            expect(headers).to.have.key("set-cookie");
-            expect(headers["set-cookie"][0]).to.match(/^connect\.sid/);
-
+            studentCreated.resolve();
             done();
         });
     });
     
     it("can update a student", function (done) {
-        http.put("/student/" + studentId, {"student": updatedStudent}).test(function (response) {
-            expect(response).to.have.property("student");
-            expect(response.student).to.eql(_.extend(student, updatedStudent));
-            done();
+        Q.when(studentCreated, function () {
+            http.put("/student/" + studentId, {"student": updatedStudent}).test(function (response) {
+                expect(response).to.have.property("student");
+                expect(response.student).to.eql(_.omit(_.extend(student, updatedStudent), "resume", "transcript", "accountId"));
+
+                studentUpdated.resolve();
+                done();
+            });
         });
     });
 
+    it("can find a student", function (done) {
+        Q.all([studentCreated, studentUpdated]).then(function () {
+            http.get("/student/" + studentId).test(function (response) {
+                expect(response).to.have.property("student");
+                expect(_.omit(response.student, "resume", "transcript"))
+                    .to.eql(_.omit(_.extend(student, updatedStudent), "resume", "transcript", "accountId"));
+                done();
+            });
+        });
+    });
+    
+    it("can login as a student", function (done) {
+        Q.all([studentCreated, studentUpdated]).then(function () {
+            http.post("/login", studentCredentials).test(function (response, headers) {
+                expect(response).to.have.property("student");
+                expect(_.omit(response.student, "resume", "transcript")).to.eql(_.omit(_.extend(student, updatedStudent), "resume", "transcript"));
+                expect(headers).to.have.key("set-cookie");
+                expect(headers["set-cookie"][0]).to.match(/^connect\.sid/);
+
+                done();
+            });
+        });
+    });
+    
     it("can create a meetup", function (done) {
-        meetup.startupId = startupId;
+        Q.when(startupCreated, function () {
+            meetup.startupId = startupId;
 
-        http.post("/meetup", { "meetup": meetup }).test(function (response) {
-            expect(response).to.have.property("meetup");
-            expect(response.meetup).to.have.key("id");
-            expect(response.meetup.id).to.be.ok();
-            meetupId = meetup.id = response.meetup.id;
+            http.post("/meetup", { "meetup": meetup }).test(function (response) {
+                expect(response).to.have.property("meetup");
+                expect(response.meetup).to.have.key("id");
+                expect(response.meetup.id).to.be.ok();
+                meetupId = meetup.id = response.meetup.id;
 
-            expect(response.meetup).to.eql(meetup);
+                expect(response.meetup).to.eql(meetup);
 
-            done();
+                meetupCreated.resolve();
+                done();
+            });
         });
     });
 
     it("can add a meetup participant", function (done) {
-        http.post("/meetup/participant", { "meetupId": meetupId, "studentId": studentId })
-            .test(function (response) { done(); });
+        Q.all([meetupCreated, studentCreated]).then(function () {
+            http.post("/meetup/participant", { "meetupId": meetupId, "studentId": studentId })
+                .test(function (response) { done(); });
+        });
     });
 
     var http = {};
