@@ -1,4 +1,7 @@
 /*
+ * Helper routines to handle responses from the ORM (database abstraction layer) and
+ * sends a JSON-formatted HTTP response.
+ *
  * Copyright (c) 2014, Patrice Boulet & Nicholas Gagnon
  * All rights reserved.
  */

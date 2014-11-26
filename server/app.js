@@ -1,5 +1,6 @@
 /*
- * Server main bootstrap
+ * Server main bootstrap file. Defines the HTTP routes available to the client-side
+ * scripts through AJAX calls.
  *
  * Copyright (c) 2014, Patrice Boulet & Nicholas Gagnon
  * All rights reserved.

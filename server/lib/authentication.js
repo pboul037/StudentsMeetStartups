@@ -1,5 +1,6 @@
 /**
- * Authentication handling
+ * Authentication handling using the passport library. Fetches the user account
+ * from the database and checks the password.
  *
  * Copyright (c) 2014, Patrice Boulet & Nicholas Gagnon
  * All rights reserved.

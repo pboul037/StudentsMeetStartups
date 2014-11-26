@@ -1,5 +1,5 @@
 /**
- * Define associations between objects
+ * Define associations between the various objects of our domain.
  *
  * Copyright (c) 2014, Patrice Boulet & Nicholas Gagnon
  * All rights reserved.
