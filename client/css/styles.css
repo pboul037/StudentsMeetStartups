@@ -128,3 +128,12 @@
     display: block;
 }
 
+.smeets-logo-mirror
+{
+     content:url('images/SmeetSLogo.jpg');
+}
+
+.smeets-logo
+{
+     content:url('images/SmeetSLogoNoMirror.jpg');
+}
