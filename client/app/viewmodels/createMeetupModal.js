@@ -1,4 +1,7 @@
 /*
+ * View model for the meetup creation modal dialog. Handles user input and updates views and communicates with
+ * the server accordingly.
+ *
  * Copyright (c) 2014, Patrice Boulet & Nicholas Gagnon
  * All rights reserved.
  */

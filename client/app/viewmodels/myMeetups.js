@@ -1,4 +1,7 @@
 /*
+ * View model where we display a user's upcoming meetups. Handles user input and updates views and communicates with
+ * the server accordingly.
+ *
  * Copyright (c) 2014, Patrice Boulet & Nicholas Gagnon
  * All rights reserved.
  */

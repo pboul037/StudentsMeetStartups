@@ -1,3 +1,10 @@
+/*
+ * Main application shell. Defines the client-side routes through which the users can navigate.
+ *
+ * Copyright (c) 2014, Patrice Boulet & Nicholas Gagnon
+ * All rights reserved.
+ */
+
 define(function (require) {
     var router = require('plugins/router');
 

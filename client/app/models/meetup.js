@@ -1,4 +1,7 @@
 /*
+ * Abstraction model for meetup domain objects. Manages all communication with the server
+ * that are related to this object.
+ *
  * Copyright (c) 2014, Patrice Boulet & Nicholas Gagnon
  * All rights reserved.
  */

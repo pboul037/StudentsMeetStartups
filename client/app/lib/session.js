@@ -1,5 +1,5 @@
 /**
- * Login session management
+ * Login/logout session management routines, regrouped in this class.
  *
  * Copyright (c) 2014, Patrice Boulet & Nicholas Gagnon
  * All rights reserved.

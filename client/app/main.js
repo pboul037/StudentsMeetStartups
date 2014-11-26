@@ -1,4 +1,6 @@
 /*
+ * Main client-side bootstrap. Loads all dependencies, and launches our application.
+ *
  * Copyright (c) 2014, Patrice Boulet & Nicholas Gagnon
  * All rights reserved.
  */
