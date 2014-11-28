@@ -11,8 +11,6 @@ var superagent = require("superagent"),
     Q = require("q");
 
 describe("StudentsMeetStartup REST API", function () {
-    var startupId, studentId, meetupId;
-    
     var startup = {
         companyName: "Acme Inc.",
         emailAddress: "careers@acme.com",
@@ -77,14 +75,14 @@ describe("StudentsMeetStartup REST API", function () {
             expect(response).to.have.property("startup");
             expect(response.startup).to.have.key("id");
             expect(response.startup.id).to.be.ok();
-            startupId = response.startup.id;
-            startup.id = startupId;
+            startup.id = response.startup.id;
 
             delete startup.username;
             delete startup.password;
 
             expect(response.startup).to.eql(startup);
 
+            console.log("---> Startup created!");
             startupCreated.resolve();
             done();
         });
@@ -92,10 +90,11 @@ describe("StudentsMeetStartup REST API", function () {
     
     it("can update a startup", function (done) {
         Q.when(startupCreated, function () {
-            http.put("/startup/" + startupId, {"startup": _.extend(startup, updatedStartup)}).test(function (response) {
+            http.put("/startup/" + startup.id, {"startup": _.extend(startup, updatedStartup)}).test(function (response) {
                 expect(response).to.have.property("startup");
                 expect(response.startup).to.eql(_.extend(startup, updatedStartup));
 
+                console.log("---> Startup updated!");
                 startupUpdated.resolve();
                 done();
             });
@@ -104,7 +103,7 @@ describe("StudentsMeetStartup REST API", function () {
 
     it("can find a statup", function (done) {
         Q.all([startupCreated, startupUpdated]).then(function () {
-            http.get("/startup/" + startupId).test(function (response) {
+            http.get("/startup/" + startup.id).test(function (response) {
                 expect(response).to.have.property("startup");
                 expect(response.startup).to.eql(_.extend(startup, updatedStartup));
                 done();
@@ -131,7 +130,7 @@ describe("StudentsMeetStartup REST API", function () {
 
             expect(response.student).to.have.key("id");
             expect(response.student.id).to.be.ok();
-            studentId = student.id = response.student.id;
+            student.id = response.student.id;
 
             expect(response.student).to.have.key("accountId");
             expect(response.student.accountId).to.be.ok();
@@ -142,6 +141,7 @@ describe("StudentsMeetStartup REST API", function () {
             
             expect(response.student).to.eql(student);
 
+            console.log("---> Student created!");
             studentCreated.resolve();
             done();
         });
@@ -149,10 +149,11 @@ describe("StudentsMeetStartup REST API", function () {
     
     it("can update a student", function (done) {
         Q.when(studentCreated, function () {
-            http.put("/student/" + studentId, {"student": updatedStudent}).test(function (response) {
+            http.put("/student/" + student.id, {"student": updatedStudent}).test(function (response) {
                 expect(response).to.have.property("student");
                 expect(response.student).to.eql(_.omit(_.extend(student, updatedStudent), "resume", "transcript", "accountId"));
 
+                console.log("---> Student updated!");
                 studentUpdated.resolve();
                 done();
             });
@@ -161,7 +162,7 @@ describe("StudentsMeetStartup REST API", function () {
 
     it("can find a student", function (done) {
         Q.all([studentCreated, studentUpdated]).then(function () {
-            http.get("/student/" + studentId).test(function (response) {
+            http.get("/student/" + student.id).test(function (response) {
                 expect(response).to.have.property("student");
                 expect(_.omit(response.student, "resume", "transcript"))
                     .to.eql(_.omit(_.extend(student, updatedStudent), "resume", "transcript", "accountId"));
@@ -185,16 +186,17 @@ describe("StudentsMeetStartup REST API", function () {
     
     it("can create a meetup", function (done) {
         Q.when(startupCreated, function () {
-            meetup.startupId = startupId;
+            meetup.startupId = startup.id;
 
             http.post("/meetup", { "meetup": meetup }).test(function (response) {
                 expect(response).to.have.property("meetup");
                 expect(response.meetup).to.have.key("id");
                 expect(response.meetup.id).to.be.ok();
-                meetupId = meetup.id = response.meetup.id;
+                meetup.id = response.meetup.id;
 
                 expect(response.meetup).to.eql(meetup);
 
+                console.log("---> Meetup created!");
                 meetupCreated.resolve();
                 done();
             });
@@ -203,7 +205,7 @@ describe("StudentsMeetStartup REST API", function () {
 
     it("can add a meetup participant", function (done) {
         Q.all([meetupCreated, studentCreated]).then(function () {
-            http.post("/meetup/participant", { "meetupId": meetupId, "studentId": studentId })
+            http.post("/meetup/participant", { "meetupId": meetup.id, "studentId": student.id })
                 .test(function (response) { done(); });
         });
     });

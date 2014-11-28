@@ -5,6 +5,8 @@
  * All rights reserved.
  */
 
+var _ = require("lodash");
+
 module.exports = function (db, cb) {
     var UserAccount = db.define("useraccount", {
         username: { type: "text" },
@@ -18,8 +20,8 @@ module.exports = function (db, cb) {
                 });
             },
             getStudent: function (callback) {
-                this.getStudents(function (error, students) {
-                    callback(error, students[0]);
+                this.getStudents({ omit: ["resume", "transcript"] }, function (error, students) {
+                    callback(error, _.omit(students[0], "resume", "transcript"));
                 });
             },
             isStudentAccount: function (callback) {
