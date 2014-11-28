@@ -8,9 +8,12 @@
 var async = require("async"),
     orm = require("orm");
 
-module.exports.connection = function (dataSourceName)
+module.exports.connection = function (dataSourceName, environment)
 {
     return orm.express(dataSourceName, { define: function (db, models, next) {
+        if (environment == "development")
+            db.settings.set('instance.cache', false);
+
         async.series([
             loadModel("meetup", "Meetup"),
             loadModel("student", "Student"),

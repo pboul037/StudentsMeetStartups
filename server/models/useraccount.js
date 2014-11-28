@@ -21,7 +21,7 @@ module.exports = function (db, cb) {
             },
             getStudent: function (callback) {
                 this.getStudents({ omit: ["resume", "transcript"] }, function (error, students) {
-                    callback(error, _.omit(students[0], "resume", "transcript"));
+                    callback(error, _.omit(students[0], "resume", "transcript", "accountId"));
                 });
             },
             isStudentAccount: function (callback) {

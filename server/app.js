@@ -36,7 +36,7 @@ app.use(session({
     saveUninitialized: true}));
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(database.connection(config.dataSourceName));
+app.use(database.connection(config.dataSourceName, process.env.NODE_ENV));
 app.use(responseHandler);
 
 passport.use(authentication.initialize(passport));
@@ -170,6 +170,9 @@ app.post("/student", function (request, response) {
         function (userAccount, callback) {
             student.accountId = userAccount.id;
             Student.create(student, callback);
+        },
+        function (student, callback) {
+            callback(null, _.omit(student, "resume", "transcript", "accountId"));
         }
     ], response.handle("student"));
 });
